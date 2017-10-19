@@ -185,7 +185,11 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
       echo '<div class="row">';
     }
     echo '<div class="col-sm-3">';
-    echo '<b>' . $row['TeamName'] . ' <br/>Grade: ' . $row['Grade'] . '</b>';
+    echo '<h4>' . $row['TeamName'];
+    if ($row['Grade'] != '') {
+      echo '  Grade: ' . $row['Grade'];
+    }
+    echo '</h4>';
     switch ($cmd){
       case "grading":
         //      Comment: <input type='text'   name='comment'  value='".$row['Comment']."'>
@@ -204,9 +208,10 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
         break;
       case "building":
         listFreeStudentsForEnroll($row['ID'], $td, $job, $course);
+        listStudentsByTeam($cmd, $row['ID'], $td, $job, $course);
       break;
     }
-    listStudentsByTeam($cmd, $row['ID'], $td, $job, $course);
+
     echo "</div>";
   }
   echo "</div></div>";
