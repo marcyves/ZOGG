@@ -13,4 +13,27 @@ Share your concerns and we will share our solutions !
 ## To do
 
 - create the todo
-- cleanup this mess
+- cleanup the mess
+
+### General
+- Review CSS for Responsive Design
+
+
+### Building
+- Create automatically numbered groups with n students
+- Discard a group
+- Discard all groups
+
+
+### Grading
+- Check when all groups have a grade
+- Review page design as a table
+- Detect commas in grades
+
+## Done
+
+### Building
+- Create automaticaly 1 group per student for exams
+
+### Grading
+- Discard "Students in this group without a team" box when empty
