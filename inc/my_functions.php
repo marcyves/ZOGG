@@ -28,7 +28,7 @@ function assignGradeToTeam($id, $grade, $comment){
   global $mysqli;
 
   $comment = str_replace("'","\'", $comment);
-  $sql = 'UPDATE Team  SET Grade = '.$grade.', Comment =\''.$comment.'\' WHERE ID = '.$id;
+  $sql = 'UPDATE Team  SET Grade = \''.$grade.'\', Comment =\''.$comment.'\' WHERE ID = '.$id;
   $result = mysqli_query($mysqli, $sql);
 }
 function EnrollStudentInTeam($student, $team){
@@ -136,6 +136,17 @@ function createTeam($name, $groupId, $jobId){
   echo "<br/>$sql<br/>";
   mysqli_query($mysqli,$sql);
 }
+
+function createSoloTeam($groupId, $jobId){
+  global $mysqli;
+  $sql ="SELECT Prenom, NOM from Student WHERE StudentGroupId = '".$groupId."'";
+  $result = mysqli_query($mysqli,$sql);
+  while ((list($prenom, $nom) = mysqli_fetch_row($result))) {
+    $name = "$nom $prenom";
+    $sql = "INSERT INTO Team (teamName, GroupId, jobId) VALUES ('".$name."', '".$groupId."', '".$jobId."') ";
+    mysqli_query($mysqli,$sql);
+  }
+}
 /*
 
 */
@@ -158,32 +169,37 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
   Set grades to teams
 */
   echo "<h4>Task: <b>".GetJobName($job)."</b></h4>";
-  echo '<div class=container>
-  ';
   if ($cmd == 'building'){
+    echo '<div class=container>';
     echo '<div class="row">';
     echo "<form method='GET'>
     <input type='text'   name='teamName'  value='?'>
     <input type='hidden' name='step'   value='grading'>
+    <input type='hidden' name='sub'   value='create'>
     <input type='hidden' name='groupId'     value='$td'>
     <input type='hidden' name='course' value='$course'>
     <input type='hidden' name='job'    value='$job'>
     <input class='button' type='submit'               value='Create new team'>
     </form>";
+    echo "<form method='GET'>
+    <input type='hidden' name='step'   value='grading'>
+    <input type='hidden' name='sub'   value='solo'>
+    <input type='hidden' name='groupId'     value='$td'>
+    <input type='hidden' name='course' value='$course'>
+    <input type='hidden' name='job'    value='$job'>
+    <input class='button' type='submit'               value='Create solo'>
+    </form>";
     echo '</div>';
   }
 
-  $count = 0;
   $sql = 'SELECT DISTINCT Team.ID, `Team`.`TeamName`, `Team`.`Grade`, `Team`.`Comment`, `Team`.`JobId` FROM `Team`
   WHERE JobId = \''.$job.'\' AND groupId ='.$td.' ORDER BY TeamName';
   //DEBUG echo "<br>$sql<br>";
   $result = mysqli_query($mysqli, $sql);
 
+  echo '<div class="row">';
+
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    $count++;
-    if ($count == 1) {
-      echo '<div class="row">';
-    }
     echo '<div class="col-sm-3">';
     echo '<h4>' . $row['TeamName'];
     if ($row['Grade'] != '') {
@@ -216,10 +232,7 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
   }
   echo "</div></div>";
 
-  echo '<div class="col-sm-3">';
-  echo "<h2>Students in this group without a team</h2>";
   displayFreeStudentsForEnroll( $td, $job, $course);
-  echo "</div>";
   mysqli_free_result($result);
 }
 /*
@@ -231,12 +244,17 @@ function displayFreeStudentsForEnroll($groupId, $jobId, $course) {
   $sql = 'SELECT ID, NOM, Prenom FROM Student S WHERE S.StudentGroupId = \''.$groupId.'\' AND  S.ID NOT IN (SELECT IdStudent FROM Student S, StudentTeam X, Team T WHERE X.idTeam = T.ID AND T.JobId = \''.$jobId.'\' AND X.idStudent = S.ID AND S.StudentGroupId = \''.$groupId.'\') ORDER BY NOM';
   $result = mysqli_query($mysqli, $sql);
 
-  echo "<ul>";
+  if (mysqli_num_rows($result)>0) {
+    echo '<div class="col-sm-3">';
+    echo "<h2>Students in this group without a team</h2>";
+    echo "<ul>";
 
-  while (($student = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo "<li>".$student['NOM']." ".$student['Prenom']."</li>";
+    while (($student = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
+      echo "<li>".$student['NOM']." ".$student['Prenom']."</li>";
+    }
+    echo "</ul>";
+    echo "</div>";
   }
-  echo "</ul>";
 }
 
 /*

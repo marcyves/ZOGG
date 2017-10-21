@@ -67,15 +67,21 @@ if ($loggedInUser->checkPermission(array(1))) {
      if (isset($_GET['sub'])) {
        switch($_GET['sub']){
          case "remove":
-         discardStudentFromTeam($_GET['student'], $_GET['team']);
-         // Display Updated List
-         listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
+            discardStudentFromTeam($_GET['student'], $_GET['team']);
+            // Display Updated List
+            listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
+         break;
+         case "create":
+            createTeam($_GET['teamName'], $_GET['groupId'], $_GET['job']);
+            listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
+         break;
+         case "solo":
+           echo '<h2>SOLO</h2>';
+           createSoloTeam($_GET['groupId'], $_GET['job']);
+           // Display Updated List
+           listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
          break;
        }
-     } else if (isset($_GET['teamName'])) {
-       createTeam($_GET['teamName'], $_GET['groupId'], $_GET['job']);
-       //Second step : display list of teams in a group TD with their members, for a set job
-       listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
      } else if (isset($_GET['teamId'])) {
        // Enroll Student
        EnrollStudentInTeam($_GET['studentId'],$_GET['teamId']);
