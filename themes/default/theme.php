@@ -15,16 +15,8 @@ function openPage($title)
   <link rel='stylesheet' href='css/reset.css' />
   <link rel='stylesheet' href='css/text.css' />
   <link rel='stylesheet' href='css/960.css' />
-<!-- modernizr enables HTML5 elements and feature detects -->
-<script src='models/funcs.js'>
-<script src='js/modernizr-1.5.min.js'></script>
-<script src='js/jquery.min.js'></script>
-<script src='js/pop.js'></script>
-</script>
 </head>
-
 <body>
-    <div id='main'>
     <header>
           <h1><a href='index.php'>$websiteName</a></h1>
           <h2>$websiteDescription</h2>
@@ -43,28 +35,11 @@ function openPage($title)
         	if ($loggedInUser->checkPermission(array(1))){ //Links for permission level 1 (student)
                 	echo "          <li><a href='dropbox.php'>Dropbox</a>";
    		}
-/*
-		echo "          <li><a href='market.php'>Marketplace</a>";
-   		if ($loggedInUser->checkPermission(array(1))){ //Links for permission level 1 (student)
-   		echo "           <ul>
-                        <li><a href='market.php'>Vos questions (seeker)</a></li>
-                        <li><a href='market.php?cmd=bbuy'>Répondre aux questions (solver)</a></li>
-                    </ul>";
-   		}
-   		echo "           </li>
-                    <li><a href='wok.php'>WOC</a>";
-   		if ($loggedInUser->checkPermission(array(1))){ //Links for permission level 1 (student)
-  		echo "
-                    <ul>
-                        <li><a href='wok.php'>Vos compétences</a></li>
-                        <li><a href='wok.php?cmd=bsell'>Acheter une compétence</a></li>
-                    </ul>";
-   		}
-*/
    		echo "           </li>";
   		if ($loggedInUser->checkPermission(array(2))){ //Links for permission level 2 (professor)
   	   		echo '	<li><a href="grading.php">Team Grading</a></li>
-				<li><a href="building.php">Team Building</a></li>';
+				<li><a href="building.php">Team Building</a></li>
+        <li><a href="student.php">Student Management</a></li>';
   		}
 	}
    	echo "           <li><a href='user_settings.php'>Profile</a></li>
@@ -74,24 +49,23 @@ function openPage($title)
         </nav>
         ";
 
+        echo '<main>';
 
 if ($loggedInUser->checkPermission(array(1))){
   $text_group = "";
   $userLevel = "Student";
 }
 if ($loggedInUser->checkPermission(array(2))){
-  $text_group = displayCurrentGroup();
+  echo displayCurrentGroup();
   $userLevel = "Professor";
 }
 if ($loggedInUser->checkPermission(array(3))){
   $text_group = "";
   $userLevel = "Admin";
 }
+echo '<div id="site_content">';
 
-
-        echo '<div id="site_content">';
         $text = "<h3>".$loggedInUser->displayname."</h3><p><i>$userLevel</i></p>".
-        $text_group.
         "$INX_LINKS";
 
         echo displaySideMenu($text);
@@ -170,14 +144,13 @@ if (!empty($successes)) {
     if (!empty($errors)) {
         echo "<h4 style='color: red;'>" . $errors[0] . "</h4>";
     }
-
-
 }
 
 function closePage()
 {
     echo "</div>
         </div>
+        </main>
 <footer><small>
 <p>(c) <a href='http://about.me/marc.augier'>Marc Augier</a> 2015
      | <a href='https://github.com/marcyves/cool'>Cool on GitHub</a>

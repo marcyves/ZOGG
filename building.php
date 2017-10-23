@@ -23,6 +23,7 @@ require_once("models/config.php");
 if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("inc/functions.php");
 require_once("themes/$theme/theme.php");
+require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
 ini_set("display_errors", 1);
@@ -52,14 +53,9 @@ if ($loggedInUser->checkPermission(array(1))) {
    * Le code commence ici
    */
 
-   SetWorkingGroup();
-
    openPage("Building");
 
-   SelectWorkingGroup();
-
-   $text_group = displayCurrentGroup();
-   if ($text_group != ""){
+   if ($my_group->getStatus()){
      //DEBUG      print_r($_GET);
      /*
      Here we build the teams
@@ -73,6 +69,10 @@ if ($loggedInUser->checkPermission(array(1))) {
          break;
          case "create":
             createTeam($_GET['teamName'], $_GET['groupId'], $_GET['job']);
+            listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
+         break;
+         case "discard":
+            discardTeam($_GET['teamId']);
             listTeamsAvailable('building', $_GET['groupId'], $_GET['job'], $_GET['course']);
          break;
          case "solo":

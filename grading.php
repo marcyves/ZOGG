@@ -23,6 +23,7 @@ require_once("models/config.php");
 if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("inc/functions.php");
 require_once("themes/$theme/theme.php");
+require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
 
@@ -47,9 +48,7 @@ if ($loggedInUser->checkPermission(array(2))) {
     */
     openPage("Grading");
 
-    SelectWorkingGroup();
-
-    if (displayCurrentGroup()){
+    if ($my_group->getStatus()){
       //DEBUG      print_r($_GET);
       /*
       GRADING

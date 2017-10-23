@@ -23,6 +23,7 @@ require_once("models/config.php");
 if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("inc/functions.php");
 require_once("themes/$theme/theme.php");
+require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
 
@@ -48,8 +49,14 @@ if ($loggedInUser->checkPermission(array(2))) {
   //DEBUG	print_r($_GET);
   openPage("Les scores globaux");
 
+  if (isset($_GET['cmd'])) {
+    $cmd = $_GET['cmd'];
+  } else {
+    $cmd = "";
+  }
+
   if (displayCurrentGroup()){
-    switch ($_GET['cmd']){
+    switch ($cmd){
     case 'fullist';
       listAll();
     	// listAllTeams();

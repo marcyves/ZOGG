@@ -19,6 +19,9 @@ Contact: m.augier@me.com
 */
 // Parameters
 //$maxGroupNumber = 9;
+
+$my_group = new Current_Group;
+
 $result = mysqli_query($mysqli, 'SELECT max(StudentGroupId) as groupNb FROM `Student`');
 $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
 $maxGroupNumber = $row['groupNb'];
@@ -40,15 +43,28 @@ function EnrollStudentInTeam($student, $team){
 function discardStudentFromTeam($student, $team){
   global $mysqli;
 
-  $result = mysqli_query($mysqli, 'DELETE FROM StudentTeam  WHERE idStudent =  '.$student.' AND idTeam = '.$team.'');
+  $result = mysqli_query($mysqli, 'DELETE FROM StudentTeam  WHERE idStudent =  '.$student.' AND IdTeam = '.$team.'');
 }
+
+function discardTeam($team){
+  global $mysqli;
+
+  $result = mysqli_query($mysqli, 'DELETE FROM Team  WHERE ID = '.$team.'');
+}
+
+function discardStudentFromGroup($student, $team){
+  global $mysqli;
+
+  $result = mysqli_query($mysqli, 'DELETE FROM StudentTeam  WHERE idStudent =  '.$student.' AND IdTeam = '.$team.'');
+}
+
 
 
 /*
 List TD groups
 */
 function listTD($myScript) {
-  global $mysqli, $maxGroupNumber;
+  global $mysqli, $maxGroupNumber, $my_group;
 
   /*  $myScript = "index";
   if ($cmd == 'AddTeams') {
@@ -65,7 +81,7 @@ echo '
 
 $view = "td";
 
-$course = getCurrentCourseDetails();
+$course = $my_group->getCurrentCourseDetails();
 
 switch ($view){
   case "td":
@@ -73,7 +89,6 @@ switch ($view){
 
     echo '<b>Group: '. $course['GroupName'] .'</b></br/>';
     $sql = 'SELECT  id, Name FROM `Job` WHERE CourseId = '. $course['CourseId'] .' ORDER BY Name';
-    echo $sql;
     $result = mysqli_query($mysqli, $sql);
     while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
       echo '<a href="'.$myScript.'.php?groupId='.$course['GroupId'].'&job=' . $row['id'] . '&course='.$course['CourseId'].'">'.$row['Name'].'</a><br/>';
@@ -101,10 +116,10 @@ switch ($view){
 }
 
 /*
-listStudentsByTeam($cmd, $teamId)
+listStudentsByTeam($teamId)
 List Students for a specific Team
 */
-function listStudentsByTeam($cmd, $teamId, $td, $job, $course) {
+function listStudentsByTeam($teamId, $td, $job, $course) {
   global $mysqli;
 
   echo '<table class="post">';
@@ -114,7 +129,7 @@ function listStudentsByTeam($cmd, $teamId, $td, $job, $course) {
     echo '<tr>';
     echo '<td>' . $row['Prenom'] . '</td>';
     echo '<td>' . $row['NOM'] . '</td>';
-    echo '<td><a href="'.$cmd.'.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">Remove</a></td>';
+    echo '<td><a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">Remove</a></td>';
     echo '</tr>';
   }
   mysqli_free_result($result);
@@ -147,6 +162,7 @@ function createSoloTeam($groupId, $jobId){
     mysqli_query($mysqli,$sql);
   }
 }
+
 /*
 
 */
@@ -169,7 +185,31 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
   Set grades to teams
 */
   echo "<h4>Task: <b>".GetJobName($job)."</b></h4>";
-  if ($cmd == 'building'){
+  if ($cmd == 'building') {
+    listTeamsForBuilding($td, $job, $course);
+  } else if ($cmd == 'grading') {
+    listTeamsForGrading($td, $job, $course);
+  }
+}
+
+/*
+
+*/
+function listTeamsForBuilding($td, $job, $course) {
+  global $mysqli;
+/*
+  Parameters
+  ----------
+  td: TD #
+  job: job id
+  course: course id
+
+  Displays the list of teams for a job in a course
+  - building
+  Allows to add more participants to a team.
+  Allows to create new teams.
+
+*/
     echo '<div class=container>';
     echo '<div class="row">';
     echo "<form method='GET'>
@@ -190,7 +230,6 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
     <input class='button' type='submit'               value='Create solo'>
     </form>";
     echo '</div>';
-  }
 
   $sql = 'SELECT DISTINCT Team.ID, `Team`.`TeamName`, `Team`.`Grade`, `Team`.`Comment`, `Team`.`JobId` FROM `Team`
   WHERE JobId = \''.$job.'\' AND groupId ='.$td.' ORDER BY TeamName';
@@ -202,31 +241,24 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
     echo '<div class="col-sm-3">';
     echo '<h4>' . $row['TeamName'];
+    echo '</h4>';
     if ($row['Grade'] != '') {
       echo '  Grade: ' . $row['Grade'];
+    } else {
+      echo "<p>
+      <form method='GET'>
+      <input type='hidden' name='step'    value='building'>
+      <input type='hidden' name='sub'    value='discard'>
+      <input type='hidden' name='groupId' value='$td'>
+      <input type='hidden' name='course'  value='$course'>
+      <input type='hidden' name='job'     value='$job'>
+      <input type='hidden' name='teamId'  value='".$row['ID']."'>
+      <input class='button' type='submit' value='Discard'>
+      </form></p>";
     }
-    echo '</h4>';
-    switch ($cmd){
-      case "grading":
-        //      Comment: <input type='text'   name='comment'  value='".$row['Comment']."'>
 
-        echo "<p>
-        <form method='GET'>New grade:
-        <input type='text' name='grade' size='4' value='".$row['Grade']."'>
-        <textarea name='comment'>".$row['Comment']."</textarea>
-        <input type='hidden' name='step'   value='grading'>
-        <input type='hidden' name='groupId'     value='$td'>
-        <input type='hidden' name='course' value='$course'>
-        <input type='hidden' name='job'    value='$job'>
-        <input type='hidden' name='teamId' value='".$row['ID']."'>
-        <input class='button' type='submit'               value='Set'>
-        </form></p>";
-        break;
-      case "building":
-        listFreeStudentsForEnroll($row['ID'], $td, $job, $course);
-        listStudentsByTeam($cmd, $row['ID'], $td, $job, $course);
-      break;
-    }
+    listFreeStudentsForEnroll($row['ID'], $td, $job, $course);
+    listStudentsByTeam($row['ID'], $td, $job, $course);
 
     echo "</div>";
   }
@@ -235,6 +267,55 @@ function listTeamsAvailable($cmd, $td, $job, $course) {
   displayFreeStudentsForEnroll( $td, $job, $course);
   mysqli_free_result($result);
 }
+
+
+/*
+
+*/
+function listTeamsForGrading($td, $job, $course) {
+  global $mysqli;
+/*
+  Parameters
+  ----------
+  td: TD #
+  job: job id
+  course: course id
+
+  Displays the list of teams for a job in a course
+  - grading
+  Set grades to teams
+*/
+  $sql = 'SELECT DISTINCT Team.ID, `Team`.`TeamName`, `Team`.`Grade`, `Team`.`Comment`, `Team`.`JobId` FROM `Team`
+  WHERE JobId = \''.$job.'\' AND groupId ='.$td.' ORDER BY TeamName';
+  //DEBUG echo "<br>$sql<br>";
+  $result = mysqli_query($mysqli, $sql);
+
+  echo '<ul class="grading">';
+
+  while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
+    echo '<li>'.
+    "<form class='grading' method='GET'><label>
+    <span>".
+    $row['TeamName'].
+    "</span>
+    <input type='text' name='grade' size='4' value='".$row['Grade']."'>
+    <textarea name='comment'>".$row['Comment']."</textarea>
+    <input type='hidden' name='step'    value='grading'>
+    <input type='hidden' name='groupId' value='$td'>
+    <input type='hidden' name='course'  value='$course'>
+    <input type='hidden' name='job'     value='$job'>
+    <input type='hidden' name='teamId'  value='".$row['ID']."'>
+    <input class='tiny-button' type='submit' value='Set'>
+    </form></label>";
+
+    echo "</li>";
+  }
+  echo "</ul>";
+
+  displayFreeStudentsForEnroll( $td, $job, $course);
+  mysqli_free_result($result);
+}
+
 /*
 
 */
@@ -349,12 +430,102 @@ function listTeams($id) {
   }
 
   /*
+  Display Students for a Group
+  */
+  function displayStudentsbyGroup() {
+    global $mysqli, $my_group;
+
+    $rowCourse = $my_group->getCurrentCourseDetails();
+
+    echo '<table border=1>';
+    echo '<tr>';
+    echo '<th>Nom</th>';
+    echo '<th>Prénom</th>';
+    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job ORDER BY id');
+    $lastJobId = 0;
+    while (list($id, $name, $weight) = mysqli_fetch_row($result)){
+      echo '<th>'.$name.' ('.$weight.')</th>';
+      $jobIdList[$lastJobId] = $id;
+      $jobWeightList[$lastJobId] = $weight;
+      $lastJobId++;
+    }
+    echo '<th>Grade</th>';
+    echo '<th colspan="2">Command</th>';
+    echo '</tr>';
+    //
+    // Loop to Display Student Information
+    $sql = 'SELECT `ID`, `NOM`, `Prenom` FROM `Student`'
+    . ' WHERE `StudentGroupId` = \''.$rowCourse['GroupId'].'\''
+    . ' ORDER BY `NOM`, `Prenom`';
+    $result = mysqli_query($mysqli, $sql);
+    $finalGrade = 0;
+    $currentStudentId = 0;
+    $tmpLine = '';
+    while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
+      if ($row['ID'] != $currentStudentId){
+        //		                $finalGrade = round($finalGrade/3,1);
+        //		                $tmpLine .= '<td>' . $finalGrade . '</td>';
+        $finalGrade = 0;
+        $finalWeight = 0;
+        $currentStudentId = $row['ID'];
+
+        $tmpLine = '</tr>'
+                    . '<td>' . $row['NOM']    . '</td>'
+                    . '<td>' . $row['Prenom'] . '</td>';
+
+        //Loop to display each grade of one student
+        for($i=0;$i < $lastJobId; $i++){
+
+          $sqlGrade = 'SELECT `Team`.`Grade` '
+          . 'FROM `StudentTeam`,  `Team` '
+          . 'WHERE `StudentTeam`.`IdStudent` =  \''. $currentStudentId.'\' '
+          . 'AND `StudentTeam`.`IdTeam` = `Team`.`ID` '
+          . 'AND `Team`.`JobId` = '.$jobIdList[$i].' ';
+
+          $rcGrade = mysqli_query($mysqli, $sqlGrade);
+          $rowGrade = mysqli_fetch_array($rcGrade, MYSQLI_ASSOC);
+
+          $tmpLine .= '<td>' . $rowGrade['Grade'] . '</td>';
+            if ($rowGrade['Grade'] != '') {
+              $finalGrade += $rowGrade['Grade']*$jobWeightList[$i];
+              $finalWeight += $jobWeightList[$i];
+            }
+          mysqli_free_result($rcGrade);
+        }
+        if ($finalWeight != 0) {
+          $tmp_grade = $finalGrade/$finalWeight;
+        } else {
+          $tmp_grade = "&nbsp;";
+        }
+        $tmpLine .= '<td>' . $tmp_grade . '</td>';
+        if ($tmp_grade > 0 ) {
+          $tmpLine .= '<td>&nbsp;</td><td>&nbsp;</td>';
+        } else {
+          $tmpLine .= "<td>
+          <form method='GET'>
+          <select name='groupId'>
+          <option></option>
+          </select>
+          </form>
+          <input type='submit' value='Move'>
+          </td>";
+          $tmpLine .= '<td><a href="?cmd=discard&studentId='.$currentStudentId.'&groupId='.$rowCourse['GroupId'].'">Discard</a></td>';
+        }
+        $tmpLine .= '</tr>';
+        echo $tmpLine;
+      }
+    }
+    mysqli_free_result($result);
+    echo '</table>';
+  }
+
+  /*
   Display Grades for a Group
   */
   function displayGroupGrades() {
-    global $mysqli;
+    global $mysqli, $my_group;
 
-    $rowCourse = getCurrentCourseDetails();
+    $rowCourse = $my_group->getCurrentCourseDetails();
 
     echo '<table border=1>';
     echo '<tr>';
@@ -417,8 +588,6 @@ function listTeams($id) {
     }
     mysqli_free_result($result);
     echo '</table>';
-
-    mysqli_free_result($rcCourse);
   }
 
   /*
@@ -506,96 +675,79 @@ function listTeams($id) {
     mysqli_free_result($rcCourse);
   }
 
-  function getCurrentCourseDetails(){
+  function buildSelect($label,$name, $col1, $col2, $sql) {
     global $mysqli;
 
-    $rc = mysqli_query($mysqli,"SELECT G.GroupId, G.GroupName, G.CourseId, G.CourseName, G.ProgramName FROM Current_Group G");
-    $row = mysqli_fetch_array($rc, MYSQLI_ASSOC);
+    $tmp = "<form method='post'>$label : <select name='$col1'>";
 
-    return $row;
-  }
-
-  function displayCurrentGroup(){
-    global $mysqli;
-    $tmp = "";
-
-    $rc = mysqli_query($mysqli,"SELECT GroupId, GroupName, CourseName, ProgramName, CampusName FROM Current_Group");
-    if (($row = mysqli_fetch_array($rc, MYSQLI_ASSOC)) != NULL){
-      // Display course and campus information
-      $tmp = 'Campus : '.$row['CampusName'].'<br/>'.
-       'Programme : '.$row['ProgramName'].'<br/>'.
-       'Cours : '.$row['CourseName'].'<br/>'.
-       'Groupe '.$row['GroupName'];
+    $rc = mysqli_query($mysqli, $sql);
+    while (($row = mysqli_fetch_array($rc, MYSQLI_ASSOC)) != NULL) {
+      if ($row[$col2] == $name) {
+        $sel = "selected";
+      } else {
+        $sel = "";
+      }
+          $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."</option>";
     }
+    $tmp .= "</select>
+    <input type='submit' value='Change'>
+              </form>";
+
     mysqli_free_result($rc);
     return $tmp;
   }
-  /*
-  Display Classes Dashboard for professor
-  */
-  function SelectWorkingGroup() {
-    global $mysqli;
 
-    //    print_r($_POST);
+  function displayCurrentGroup(){
+    global $mysqli, $my_group;
 
-    // echo "<h2>Select Group by Campus, program and course</h2>";
-    $rcCampus= mysqli_query($mysqli, 'SELECT CampusId, CampusName FROM Campus');
-    while (($rowCampus = mysqli_fetch_array($rcCampus, MYSQLI_ASSOC)) != NULL) {
-      echo "
-          <form class='btn' method='post'>
-          <input type='hidden' value='".$rowCampus['CampusId']."' name='CampusId' >
-          <input class='button' type='submit' value='".$rowCampus['CampusName']."' >
-          </form>";
-
-    }
-    mysqli_free_result($rcCampus);
+    // print_r($_POST);
 
     if (isset($_POST['CampusId'])) {
-      $rcCampus = mysqli_query($mysqli, 'SELECT CampusName FROM Campus WHERE CampusId = '.$_POST['CampusId'].';');
-      $rowCampus = mysqli_fetch_array($rcCampus, MYSQLI_ASSOC);
-      // echo "Select Program/course:";
-      $rcProgram= mysqli_query($mysqli, 'SELECT ProgramId, ProgramName FROM Program WHERE ProgramCampusId = '.$_POST['CampusId'].' ORDER BY ProgramName');
-      while (($rowProgram = mysqli_fetch_array($rcProgram, MYSQLI_ASSOC)) != NULL) {
-        echo "<h2>".$rowProgram['ProgramName']."</h2>";
-        $rcCourse= mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = '".$rowProgram['ProgramId']."' ORDER BY CourseName");
-        while (($rowCourse = mysqli_fetch_array($rcCourse, MYSQLI_ASSOC)) != NULL) {
-          echo "<h3>".$rowCourse['CourseName']." ".$rowCourse['CourseYear']." (".$rowCourse['CourseSemester'].")</h3>";
-          $rcGroup= mysqli_query($mysqli, "SELECT GroupId, GroupName FROM `Group` WHERE GroupCourseId = '".$rowCourse['CourseId']."' ORDER BY GroupName");
-//          echo "<ul id='nav'>";
-            echo "<br/><div id='button_line'>";
-          while (($rowGroup = mysqli_fetch_array($rcGroup, MYSQLI_ASSOC)) != NULL) {
-
-            echo "<form method='post'>";
-            echo "<input type='hidden' value='set_group' name='cmd' >";
-            echo "<input type='hidden' value='".$rowCampus['CampusName']."' name='CampusName' >";
-            echo "<input type='hidden' value='".$rowCourse['CourseName']."' name='CourseName' >";
-            echo "<input type='hidden' value='".$rowCourse['CourseId']."' name='CourseId' >";
-            echo "<input type='hidden' value='".$rowProgram['ProgramName']."' name='ProgramName' >";
-            echo "<input type='hidden' value='".$rowGroup['GroupId']."' name='GroupId' >";
-            echo "<input type='hidden' value='".$rowGroup['GroupName']."' name='GroupName' >";
-            echo "<input class='button' type='submit' value='".$rowGroup['GroupName']."' >";
-            echo "</form>";
-          }
-          echo "</div><br/>";
-          mysqli_free_result($rcGroup);
-        }
-        mysqli_free_result($rcCourse);
-      }
-      mysqli_free_result($rcProgram);
-      mysqli_free_result($rcCampus);
+      $my_group->setCampus($_POST['CampusId']);
     }
+    if (isset($_POST['ProgramId'])) {
+      $my_group->setProgram($_POST['ProgramId']);
+    }
+    if (isset($_POST['CourseId'])) {
+      $my_group->setCourse($_POST['CourseId']);
+    }
+    if (isset($_POST['GroupId'])) {
+      $my_group->setGroup($_POST['GroupId']);
+    }
+
+    $tmp = "<div class='breadcrumb'>" . selectCampus("Campus", $my_group->CampusName);
+
+    if ($my_group->CampusId > 0) {
+      $tmp .= selectProgram("Programme", $my_group->ProgramName, $my_group->CampusId);
+      if ($my_group->ProgramId > 0) {
+        $tmp .= selectCourse("Cours", $my_group->CourseName, $my_group->ProgramId);
+        if ($my_group->CourseId > 0 ) {
+          $tmp .= selectGroup("Groupe", $my_group->GroupName, $my_group->CourseId);
+        }
+      }
+    }
+    $tmp .= "</div>";
+
+    return $tmp;
   }
 
-  function SetWorkingGroup() {
-    global $mysqli;
 
-    if (isset($_POST['cmd'])) {
-      if ($_POST['cmd'] == "set_group"){
-        mysqli_query($mysqli,"DELETE FROM Current_Group");
-        mysqli_query($mysqli,"INSERT INTO Current_Group (GroupId, GroupName, CourseId, CourseName, ProgramName, CampusName) VALUES ('".$_POST['GroupId']."', '".$_POST['GroupName']."', '".$_POST['CourseId']."', '".$_POST['CourseName']."', '".$_POST['ProgramName']."', '".$_POST['CampusName']."') ");
-        echo "<p>Nous allons travailler avec le groupe ".$_POST['GroupName']." du cours ".$_POST['CourseName']." du programme ".$_POST['ProgramName'].".<p>";
-      }
-    }
+  function selectCampus($label, $name) {
+    $sql = 'SELECT CampusId, CampusName FROM Campus';
+    return buildSelect($label, $name, 'CampusId', 'CampusName', $sql);
+  }
+
+  function selectProgram($label, $name, $id) {
+    $sql = 'SELECT ProgramId, ProgramName FROM Program WHERE ProgramCampusId = '.$id.' ORDER BY ProgramName';
+    return buildSelect($label, $name, 'ProgramId', 'ProgramName', $sql);
+  }
+  function selectCourse($label, $name, $id) {
+    $sql = "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = $id ORDER BY CourseName";
+    return buildSelect($label, $name, 'CourseId', 'CourseName', $sql);
+  }
+  function selectGroup($label, $name, $id) {
+    $sql = "SELECT GroupId, GroupName FROM `Group` WHERE GroupCourseId = $id ORDER BY GroupName";
+    return buildSelect($label, $name, 'GroupId', 'GroupName', $sql);
   }
 
   ?>
