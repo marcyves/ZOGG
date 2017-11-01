@@ -12,9 +12,6 @@ function openPage($title)
 <meta charset=utf-8' />
 <title>".$websiteName."</title>
   <link rel='stylesheet' href='themes/default/style.css' />
-  <link rel='stylesheet' href='css/reset.css' />
-  <link rel='stylesheet' href='css/text.css' />
-  <link rel='stylesheet' href='css/960.css' />
 </head>
 <body>
     <header>
@@ -33,9 +30,8 @@ function openPage($title)
 	if (isUserReady($loggedInUser->user_id))
 	{
         	if ($loggedInUser->checkPermission(array(1))){ //Links for permission level 1 (student)
-                	echo "          <li><a href='dropbox.php'>Dropbox</a>";
+                	echo "          <li><a href='dropbox.php'>Dropbox</a></li>";
    		}
-   		echo "           </li>";
   		if ($loggedInUser->checkPermission(array(2))){ //Links for permission level 2 (professor)
   	   		echo '	<li><a href="grading.php">Team Grading</a></li>
 				<li><a href="building.php">Team Building</a></li>
@@ -134,8 +130,8 @@ echo '<div id="site_content">';
 
 echo "</div>
 <div class='content'>".
-        '<img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/examples.png" alt="examples" />
-            <h1 style="margin: 15px 0 0 0;">'.$title.'</h1>';
+        '<img src="images/examples.png" alt="examples" />
+            <h1>'.$title.'</h1>';
 
 // Display error or success messages
 if (!empty($successes)) {

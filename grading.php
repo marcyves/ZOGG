@@ -61,11 +61,14 @@ if ($loggedInUser->checkPermission(array(2))) {
                     assignGradeToTeam($_GET['teamId'], $_GET['grade'], $_GET['comment']);
                     listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
             }else{
+              echo "Second step";
                     //Second step : display list of teams
                     listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
             //	listTeamsForGrading($_GET['td'],$_GET['job']);
             }
       } else {
+        echo "First step";
+
             //First step : select TD and task which we want to grade
             listTD('grading');
     }

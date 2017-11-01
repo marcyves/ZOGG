@@ -74,10 +74,9 @@ $myScript = "admin";
 }
 */
 
-echo '
-<div class=container>
-<div class="row">
-<div class="col-sm-3">';
+echo '<div class=container>';
+//echo '<div class="row">';
+echo '<div class="col-sm-3">';
 
 $view = "td";
 
@@ -94,7 +93,7 @@ switch ($view){
       echo '<a href="'.$myScript.'.php?groupId='.$course['GroupId'].'&job=' . $row['id'] . '&course='.$course['CourseId'].'">'.$row['Name'].'</a><br/>';
     }
 
-    echo '</div>';
+//    echo '</div>';
     echo '</div></div>';
     mysqli_free_result($result);
   break;
@@ -122,19 +121,18 @@ List Students for a specific Team
 function listStudentsByTeam($teamId, $td, $job, $course) {
   global $mysqli;
 
-  echo '<table class="post">';
   $result = mysqli_query($mysqli, 'SELECT Student.ID, Prenom, NOM  FROM `Student` , StudentTeam WHERE Student.ID = idStudent AND idTeam = \''.$teamId.'\' ORDER BY StudentGroupId');
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<tr>';
-    echo '<td>' . $row['Prenom'] . '</td>';
-    echo '<td>' . $row['NOM'] . '</td>';
-    echo '<td><a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">Remove</a></td>';
-    echo '</tr>';
+    echo '<p>';
+    echo ucfirst(strtolower($row['Prenom'])) . " ";
+    echo ucfirst(strtolower($row['NOM'])) . ' ';
+    echo '<a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">';
+    echo '<img src="themes/default/images/delete.png">';
+//    echo '<span class="delete">&nbsp;</span>';
+    echo '</a></p>';
   }
   mysqli_free_result($result);
-  echo '</table>';
-
 }
 
 function GetJobName($id){
@@ -211,7 +209,7 @@ function listTeamsForBuilding($td, $job, $course) {
 
 */
     echo '<div class=container>';
-    echo '<div class="row">';
+    echo '<div class="col-sm-3">';
     echo "<form method='GET'>
     <input type='text'   name='teamName'  value='?'>
     <input type='hidden' name='step'   value='grading'>
@@ -236,7 +234,7 @@ function listTeamsForBuilding($td, $job, $course) {
   //DEBUG echo "<br>$sql<br>";
   $result = mysqli_query($mysqli, $sql);
 
-  echo '<div class="row">';
+//  echo '<div class="row">';
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
     echo '<div class="col-sm-3">';
@@ -262,7 +260,8 @@ function listTeamsForBuilding($td, $job, $course) {
 
     echo "</div>";
   }
-  echo "</div></div>";
+  echo "</div>";
+//  echo "</div>";
 
   displayFreeStudentsForEnroll( $td, $job, $course);
   mysqli_free_result($result);
@@ -290,11 +289,9 @@ function listTeamsForGrading($td, $job, $course) {
   //DEBUG echo "<br>$sql<br>";
   $result = mysqli_query($mysqli, $sql);
 
-  echo '<ul class="grading">';
-
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<li>'.
-    "<form class='grading' method='GET'><label>
+    echo '<div class="grading">'.
+    "<form method='GET'><label>
     <span>".
     $row['TeamName'].
     "</span>
@@ -306,11 +303,9 @@ function listTeamsForGrading($td, $job, $course) {
     <input type='hidden' name='job'     value='$job'>
     <input type='hidden' name='teamId'  value='".$row['ID']."'>
     <input class='tiny-button' type='submit' value='Set'>
-    </form></label>";
-
-    echo "</li>";
+    </form></label>".
+    "</div>\n\n";
   }
-  echo "</ul>";
 
   displayFreeStudentsForEnroll( $td, $job, $course);
   mysqli_free_result($result);
