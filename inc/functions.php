@@ -20,8 +20,8 @@
 
 function title($icon, $title)
 {
-    echo '<img style="float: left; vertical-align: middle; margin: 0 10px 0 0;" src="images/'.$icon.'.png" alt="examples" />
-            <h1 style="margin: 15px 0 0 0;">'.$title.'</h1>';
+    echo '<img src="themes/default/images/'.$icon.'.png" alt="examples" />
+            <h1>'.$title.'</h1>';
 
 }
 
@@ -93,20 +93,20 @@ function listeMarketPlace($cmd,$type,$sqlTmp)
     global $mysqli, $loggedInUser;
 
 
-    
+
     $flagSelf = ((substr($cmd,0, 1) == 'y')? true : false);    	// On détermine si on affiche les données de l'équipe ($flagself true) ou des autres équipes ($flagself false)
-	$userIsBanker = (($loggedInUser->role == 6)? true : false);	
+	$userIsBanker = (($loggedInUser->role == 6)? true : false);
 
     // On affiche les données de la table Market pour $type
-    $sql = "SELECT M.id, display_name, email, titre, description, price, timestamp, prestation_name 
-            FROM market M, sk_users U, prestation P 
+    $sql = "SELECT M.id, display_name, email, titre, description, price, timestamp, prestation_name
+            FROM market M, sk_users U, prestation P
             WHERE P.id = prestation_id AND U.id = M.user_id AND type = '$type'$sqlTmp";
-               
+
 //debug    echo "<br/>$sql";
     if ($result = mysqli_query($mysqli, $sql))
     {
         $nbLignes = mysqli_num_rows($result);
-        
+
         if ($nbLignes > 0)
         {
             echo "<table>".
@@ -150,7 +150,7 @@ function listeMarketPlace($cmd,$type,$sqlTmp)
 
 function iconMarketReply($marketId, $userId){
     global $mysqli;
-    
+
     if ($userId != ""){
         $sql1 = "SELECT * FROM market WHERE market_id = '$marketId' and user_id='$userId'";
         $sql2 = "SELECT * FROM market WHERE market_id = '$marketId' and user_id='$userId' AND type != 'Payed'";
@@ -168,7 +168,7 @@ function iconMarketReply($marketId, $userId){
 
         if ($nbLignesDetail > 0){
             return "<img src='images/add.png'>";
-        } else {            
+        } else {
             return "<img src='images/accept.png'>";
         }
     } else {
@@ -179,9 +179,9 @@ function iconMarketReply($marketId, $userId){
 
 function countMarketReply($marketId){
     global $mysqli;
-    
+
     $sql = "SELECT * FROM market WHERE market_id = '$marketId'";
-    
+
     $detail =  mysqli_query($mysqli, $sql);
     $nbLignesDetail = mysqli_num_rows($detail);
 
@@ -190,11 +190,11 @@ function countMarketReply($marketId){
 
 function countMyMarketReply($marketId){
     global $mysqli, $loggedInUser;
-    
+
     $userId =  $loggedInUser->user_id;
-    
+
     $sql = "SELECT * FROM market WHERE market_id = '$marketId' and user_id='$userId'";
-    
+
     $detail =  mysqli_query($mysqli, $sql);
     $nbLignesDetail = mysqli_num_rows($detail);
 
@@ -209,7 +209,7 @@ function getUserNameyId($id)
     global $mysqli, $db_table_prefix;
 
 	$result = mysqli_query($mysqli,"SELECT display_name FROM ".$db_table_prefix."users WHERE id='$id'");
-            
+
         echo "<h2>SELECT display_name FROM ".$db_table_prefix."users WHERE id='$id'</h2>";
 	if (list($name) = mysqli_fetch_row($result))
 		return $name;
@@ -223,7 +223,7 @@ function getTeamById($id)
     global $mysqli;
 
 	$result = mysqli_query($mysqli,"SELECT teamName FROM team WHERE id='$id'");
-	
+
 	if (list($name) = mysqli_fetch_row($result))
 		return $name." ($id)";
 	else
@@ -236,7 +236,7 @@ function getCampusById($id)
     global $mysqli;
 
 	$result = mysqli_query($mysqli,"SELECT campusName FROM campus WHERE id='$id'");
-	
+
 	if (list($name) = mysqli_fetch_row($result))
 		return $name;
 	else
@@ -254,12 +254,12 @@ function isUserReady($id)
 	{
 		$result = mysqli_query($mysqli,"SELECT teamId FROM ".$db_table_prefix."users WHERE id='$id'");
 		list($name) = mysqli_fetch_row($result);
-		
+
 		if ($name > 0)
 		{
 			$result = mysqli_query($mysqli,"SELECT campusId FROM ".$db_table_prefix."users WHERE id='$id'");
 			list($name) = mysqli_fetch_row($result);
-			
+
 			if ($name > 0)
 			{
 				return true;
@@ -281,49 +281,49 @@ function getUserFromMarket($id)
 {
     global $mysqli;
 
-    $result = mysqli_query($mysqli, "SELECT user_id FROM market WHERE id = '$id'");    
+    $result = mysqli_query($mysqli, "SELECT user_id FROM market WHERE id = '$id'");
     list($user_id) = mysqli_fetch_row($result);
-    
+
     return $user_id;
 }
 
 function browseMyTeam($id)
 {
 	global $mysqli;
-	    
+
     echo "<img style='float: left; vertical-align: middle; margin: 0 10px 0 0;' src='images/examples.png' alt='Information' />
            <h1 style='margin: 15px 0 0 0;'>Your team is #$id</h1><p>
            <table>
            <tr><th>Nom</th><th>Role</th></tr>";
 
     $result = mysqli_query($mysqli, "SELECT `display_name`, R.role FROM `sk_users` U, role R WHERE teamId = '$id' and U.roleId = R.id ORDER BY display_name");
-    
+
     while (list($user, $role) = mysqli_fetch_row($result))
 	{
         echo "<tr><td>$user</td><td>$role</td></tr>";
     }
-        
+
     echo "
     </table>";
-	
+
 }
 
 function afficheDetails($id, $type)
 {
     global $mysqli, $loggedInUser;
 
-    $result = mysqli_query($mysqli, "SELECT M.id, display_name, email, titre, description, timestamp, prestation_name, price 
+    $result = mysqli_query($mysqli, "SELECT M.id, display_name, email, titre, description, timestamp, prestation_name, price
                                        FROM market M, sk_users U, prestation P WHERE M.id = '$id' AND U.id = M.user_id");
 
     echo "<table>";
-    
+
     list($idMarket, $idUser, $email, $titre, $description, $timestamp, $prestation, $price) = mysqli_fetch_row($result);
     if ($type == 'M') {
         echo "<tr><td colspan='2'>Demande de <b>$prestation</b> déposée par l'équipe $idUser (<a href='mailto:$email'>$email</a>) pour un montant de ".number_format($price)." SKEMs.</td></tr>";
     } else if ($type == 'W') {
         echo "<tr><td colspan='2'>Proposition de <b>$prestation</b> déposée par l'équipe $idUser (<a href='mailto:$email'>$email</a>) pour un montant de ".number_format($price)." SKEMs.</td></tr>";
     }
-        
+
     echo "<tr><td>Titre :</td><td>$titre</td></tr>
     <tr><td>Description :</td><td>$description</td></tr>
     <tr><td>Date de dépot :</td><td>$timestamp</td></tr>
@@ -334,10 +334,10 @@ function afficheAccept($id1, $id2)
 {
     global $mysqli, $loggedInUser;
 
-    $result1 = mysqli_query($mysqli, "SELECT display_name, email, titre, description, timestamp, prestation_name, price 
+    $result1 = mysqli_query($mysqli, "SELECT display_name, email, titre, description, timestamp, prestation_name, price
                                        FROM market M, sk_users U, prestation P WHERE M.id = '$id1' AND U.id = M.user_id");
 
-    $result2 = mysqli_query($mysqli, "SELECT U.id, display_name, email, titre, description, timestamp, prestation_name, price 
+    $result2 = mysqli_query($mysqli, "SELECT U.id, display_name, email, titre, description, timestamp, prestation_name, price
                                        FROM market M, sk_users U, prestation P WHERE M.id = '$id2' AND U.id = M.user_id");
     echo "<table>
         <tr><td>
@@ -353,7 +353,7 @@ function afficheAccept($id1, $id2)
     </table>
     </td>
     <td>";
-    
+
     echo "<h2>La réponse sélectionnée</h2>
           <table>";
     list($idUser, $nameUser, $email, $titre, $description, $timestamp, $prestation, $price) = mysqli_fetch_row($result2);
@@ -388,11 +388,11 @@ function afficheReponse($id,$market)
     // On vérifie si cette demande a reçu une réponse de ce user
     if (countMyMarketReply($_GET['id'])>0)
     {
-        $sql = "SELECT M.id, type, display_name, titre, description, timestamp, price 
+        $sql = "SELECT M.id, type, display_name, titre, description, timestamp, price
                 FROM market M, sk_users U WHERE market_id = '".$_GET['id']."' AND user_id =U.id AND U.id = '".$loggedInUser->user_id."'";
         $detail =  mysqli_query($mysqli, $sql);
         list($id, $type, $idUser, $titre, $description, $timestamp, $price)  = mysqli_fetch_row($detail);
-        
+
         echo "Vous avez déjà répondu le $timestamp";
 //debug echo "<p>$id, *$type*, $idUser, $titre, $description, $timestamp, $price, $market</p>";
         if ($type == "Payed"){
@@ -402,10 +402,10 @@ function afficheReponse($id,$market)
                 echo ", vous avez déjà payé pour acheter cette offre de compétence";
             }
         } else {
-            echo ", votre offre n'a pas encore reçu de réponse";            
+            echo ", votre offre n'a pas encore reçu de réponse";
         }
         echo ".<br/>";
-        echo "<table><tr><td>$titre</td></tr><tr><td>$description</td></tr><tr><td>".number_format ($price)." SKEMs </td></tr></table>";                
+        echo "<table><tr><td>$titre</td></tr><tr><td>$description</td></tr><tr><td>".number_format ($price)." SKEMs </td></tr></table>";
     } else {
         if ($market == 'M'){
             echo "Vous pouvez y répondre directement à l'aide du formulaire suivant.<br/>
@@ -426,7 +426,7 @@ function afficheReponse($id,$market)
 
             echo "<form name='deposit' action='pay.php' method='post'>
             <div class='form_settings'>";
-            
+
             echo "<span>Titre : </span><input type='text' name='titre' value='' /><br/>
             <span>Description : </span><textarea rows='8' cols='50' name='description'></textarea><br/>
             <input type='hidden' name='id' value='$id' />
@@ -459,11 +459,11 @@ function afficheReponse($id,$market)
 
 function addProfessor($name,$display, $mail){
     global $mysqli;
-    
+
     $result = mysqli_query($mysqli, "INSERT INTO `sk_users` (`id`, `user_name`, `display_name`, `password`, `email`, `activation_token`, `last_activation_request`, `lost_password_request`, `active`, `title`, `sign_up_stamp`, `last_sign_in_stamp`) VALUES (NULL, '$name', '$display', '9051a509f95691159c7ed617fd884f29af9213d747b13b6c7860fff6fb40cb24d', '$mail', 'b3f4ed2c42cc370d457f9caa201617a8', 1377894239, 0, 1, 'Professor', 1377894239, 1377898821);");
     $result = mysqli_query($mysqli,"SELECT id FROM `sk_users` WHERE user_name = '$name';");
     list($idNew)  = mysqli_fetch_row($result);
-    $result = mysqli_query($mysqli, "INSERT INTO `sk_user_permission_matches` (`id`, `user_id`, `permission_id`) VALUES (NULL, '$idNew', '2');");    
+    $result = mysqli_query($mysqli, "INSERT INTO `sk_user_permission_matches` (`id`, `user_id`, `permission_id`) VALUES (NULL, '$idNew', '2');");
 }
 
 

@@ -6,122 +6,99 @@ function openPage($title)
     global $errors;
     global $successes;
 
-    echo "
-<!DOCTYPE html>
-<head>
-<meta charset=utf-8' />
-<title>".$websiteName."</title>
-  <link rel='stylesheet' href='themes/default/style.css' />
-</head>
-<body>
-    <header>
-          <h1><a href='index.php'>$websiteName</a></h1>
-          <h2>$websiteDescription</h2>
-    </header>";
+    echo "<!DOCTYPE html>".
+    "<head>".
+    "<meta charset=utf-8' />".
+    "<title>".$websiteName."</title>".
+    "<link rel='stylesheet' href='themes/default/style.css' />".
+    "</head>".
+    "<body>".
+    "<header>".
+    "<h1><a href='index.php'>$websiteName</a></h1>".
+    "<h2>$websiteDescription</h2>".
+    "</header>";
 
-    if(isUserLoggedIn()) {
-//Links for logged in user
+    if(isUserLoggedIn())
+    {
+      //Links for logged in user
 
-    echo
-	"<nav>
-            <div id='menu_container'>
-                <ul id='nav'>
-                <li><a href='home.php'>Home</a></li>";
-	if (isUserReady($loggedInUser->user_id))
-	{
-        	if ($loggedInUser->checkPermission(array(1))){ //Links for permission level 1 (student)
-                	echo "          <li><a href='dropbox.php'>Dropbox</a></li>";
-   		}
-  		if ($loggedInUser->checkPermission(array(2))){ //Links for permission level 2 (professor)
-  	   		echo '	<li><a href="grading.php">Team Grading</a></li>
-				<li><a href="building.php">Team Building</a></li>
-        <li><a href="student.php">Student Management</a></li>';
-  		}
-	}
-   	echo "           <li><a href='user_settings.php'>Profile</a></li>
-                    <li><a href='logout.php'>Logout</a></li>
-                    </ul>
-            </div>
-        </nav>
-        ";
+      echo "<nav>".
+      "<div id='menu_container'>".
+      "<ul id='nav'>".
+      "<li><a href='home.php'>Home</a></li>";
+      if (isUserReady($loggedInUser->user_id))
+	     {
+        	if ($loggedInUser->checkPermission(array(1)))
+          { //Links for permission level 1 (student)
+            echo "          <li><a href='dropbox.php'>Dropbox</a></li>";
+   		    }
+  		    if ($loggedInUser->checkPermission(array(2)))
+          { //Links for permission level 2 (professor)
+  	   		    echo '<li><a href="grading.php">Team Grading</a></li>'.
+              '<li><a href="building.php">Team Building</a></li>'.
+              '<li><a href="student.php">Student Management</a></li>';
+  		    }
+	     }
+   	   echo "<li><a href='user_settings.php'>Profile</a></li>".
+       "<li><a href='logout.php'>Logout</a></li>".
+       "</ul></div>".
+       "</nav>".
+       "<main>";
 
-        echo '<main>';
+       if ($loggedInUser->checkPermission(array(1)))
+       {
+         $text_group = "";
+         $userLevel = "Student";
+       }
+       if ($loggedInUser->checkPermission(array(2)))
+       {
+         echo displayCurrentGroup();
+         $userLevel = "Professor";
+       }
+       if ($loggedInUser->checkPermission(array(3)))
+       {
+         $text_group = "";
+         $userLevel = "Admin";
+       }
+       echo '<div id="site_content">';
 
-if ($loggedInUser->checkPermission(array(1))){
-  $text_group = "";
-  $userLevel = "Student";
-}
-if ($loggedInUser->checkPermission(array(2))){
-  echo displayCurrentGroup();
-  $userLevel = "Professor";
-}
-if ($loggedInUser->checkPermission(array(3))){
-  $text_group = "";
-  $userLevel = "Admin";
-}
-echo '<div id="site_content">';
+       $text = "<h3>".$loggedInUser->displayname."</h3><p><i>$userLevel</i></p>".
+       "$INX_LINKS";
 
-        $text = "<h3>".$loggedInUser->displayname."</h3><p><i>$userLevel</i></p>".
-        "$INX_LINKS";
+       echo displaySideMenu($text);
 
-        echo displaySideMenu($text);
-
-	//Links for permission level 3 (default admin)
-	if ($loggedInUser->checkPermission(array(3))){
-	$text = '</div>
-            <h3>Admin Menu</h3>'.
-                "<ul>
-	<li><a href='admin.php'>Admin</a></li>
-	</ul>";
-/*
-  	<li><a href='admin_configuration.php'>Admin Configuration</a></li>
-	<li><a href='admin_users.php'>Admin Users</a></li>
-	<li><a href='admin_permissions.php'>Admin Permissions</a></li>
-	<li><a href='admin_pages.php'>Admin Pages</a></li>
-	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>
- */
-        echo displaySideMenu($text);
-
-
-        }
+	     //Links for permission level 3 (default admin)
+	     if ($loggedInUser->checkPermission(array(3)))
+       {
+	        $text = '</div>'.
+          '<h3>Admin Menu</h3>'.
+          "<ul>
+	        <li><a href='admin.php'>Admin</a></li>
+	        </ul>";
+          /*
+            	<li><a href='admin_configuration.php'>Admin Configuration</a></li>
+          	<li><a href='admin_users.php'>Admin Users</a></li>
+          	<li><a href='admin_permissions.php'>Admin Permissions</a></li>
+          	<li><a href='admin_pages.php'>Admin Pages</a></li>
+          	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>
+           */
+           echo displaySideMenu($text);
+       }
 } else {
 //Links for users not logged in
-    /*
-    echo "
-	<nav>
-         <div id='menu_container'>
-          <ul class='sf-menu' id='nav'>
+    echo "<nav>".
+    "<ul class='sf-menu' id='nav'>
 	<li><a href='index.php'>Home</a></li>
-	<li><a href='login.php'>Login</a></li>
-	<li><a href='register.php'>Register</a></li>
-	<li><a href='forgot-password.php'>Forgot Password</a></li>";
-	if ($emailActivation)
-	{
-            echo "<li><a href='resend-activation.php'>Resend Activation Email</a></li>";
-	}
-	echo "</ul>
-                    </div>
-        </nav>
-        </header>";
-
-*/
-    echo "
-	<nav>
-         <div id='menu_container'>
-          <ul class='sf-menu' id='nav'>
-	<li><a href='index.php'>Home</a></li>
-	<li><a href='forgot-password.php'>Forgot Password</a></li>";
-	echo "</ul>
-                    </div>
-        </nav>
-        </header>";
-
-        echo '<div id="site_content">
-      <div id="sidebar_container">
-        <img class="paperclip" src="images/paperclip.png" alt="paperclip" />
+	<li><a href='forgot-password.php'>Forgot Password</a></li>".
+  "</ul>".
+  "</nav>".
+//  "</header>\n\n".
+  "<main>".
+   "<div id='site_content'>".
+      '<div id="sidebar_container">
+        <img class="paperclip" src="themes/default/images/paperclip.png" alt="paperclip" />
         <div class="sidebar">'.
-         "<h3>".$loggedInUser->displayname."</h3>".
-         "<h3>".$loggedInUser->title."</h3>".
+         "<h3>Please log in</h3>".
          "$INX_LINKS".
          "$INX_SIDE1".
          "</div>
@@ -130,7 +107,7 @@ echo '<div id="site_content">';
 
 echo "</div>
 <div class='content'>".
-        '<img src="images/examples.png" alt="examples" />
+        '<img src="themes/default/images/examples.png" alt="examples" />
             <h1>'.$title.'</h1>';
 
 // Display error or success messages
@@ -162,7 +139,7 @@ function closePage()
 function displaySideMenu($t)
 {
     return '<div id="sidebar_container">
-        <img class="paperclip" src="images/paperclip.png" alt="paperclip" />
+        <img class="paperclip" src="themes/default/images/paperclip.png" alt="paperclip" />
         <div class="sidebar">'.$t."</div>";
 }
 

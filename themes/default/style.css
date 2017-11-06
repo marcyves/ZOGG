@@ -404,11 +404,6 @@ nav {
   background: -moz-linear-gradient(top,  #FAA51A,  #F47A20);
 }
 
-#menu_container {
-  width: 1200px;
-  margin: 0 auto 0 auto;
-}
-
 #site_content {
   overflow: hidden;
   margin: 0px auto 0 auto;
