@@ -92,7 +92,6 @@ function openPage($title)
 	<li><a href='forgot-password.php'>Forgot Password</a></li>".
   "</ul>".
   "</nav>".
-//  "</header>\n\n".
   "<main>".
    "<div id='site_content'>".
       '<div id="sidebar_container">
@@ -126,7 +125,7 @@ function closePage()
         </main>
 <footer><small>
 <p>(c) <a href='http://about.me/marc.augier'>Marc Augier</a> 2015
-     | <a href='https://github.com/marcyves/cool'>Cool on GitHub</a>
+     | <a href='https://github.com/marcyves/zogg'>ZOGG on GitHub</a>
      | <a href='http://www.css3templates.co.uk'>design from css3templates.co.uk</a></p>
 </small>
 </footer>
