@@ -576,7 +576,7 @@ function listTeams($id) {
         } else {
           $tmp_grade = "&nbsp;";
         }
-        $tmpLine .= '<td>' . $tmp_grade . '</td>';
+        $tmpLine .= '<td>' . number_format($tmp_grade,2) . '</td>';
         $tmpLine .= '</tr>';
         echo $tmpLine;
       }
