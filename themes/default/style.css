@@ -10,7 +10,6 @@
   background-color: rgba(242, 145, 16, 0.5);
   border-radius: 8px;
   height: 40px;
-  width: 90%;
 }
 
 .breadcrumb form {
@@ -218,19 +217,23 @@ h2 {
   padding: 9px 0 5px 0;
 }
 
-h4, h6 {
+h4 {
   color: #F68500;
   padding: 0 0 5px 0;
-  font: normal 110% 'Yanone kaffeesatz', arial, sans-serif;
+  font: normal 110% arial, sans-serif;
 }
 
-h5, h6 {
+h5 {
+  color: #F68500;
+  letter-spacing: normal;
+}
+
+h6 {
   color: #555;
-  font: italic 95% arial, sans-serif;
+  font: 95% arial, sans-serif;
   letter-spacing: normal;
   padding: 0 0 15px 0;
 }
-
 a, a:hover {
   outline: none;
   text-decoration: underline;
@@ -294,7 +297,6 @@ main, nav, #container, #logo, #site_content, footer {
 
 main {
   margin: 50px auto;
-  width: 90%;
   border-radius: 15px 15px 15px 15px;
   -moz-border-radius: 15px 15px 15px 15px;
   -webkit-border: 15px 15px 15px 15px;
@@ -305,7 +307,6 @@ main {
 header {
   margin: 5px;
   padding:   5px;
-  width: 90%;
   height: 120px;
   line-height: 200%;
   text-shadow: 8px 8px 10px dodgerblue;
@@ -389,7 +390,6 @@ header h2 {
 
 nav {
   height: 44px;
-  width: 90%;
   margin: 34px auto 0 auto;
   -webkit-border-radius: .5em .5em .5em .5em ;
   -moz-border-radius: .5em .5em .5em .5em ;
@@ -717,7 +717,7 @@ CSS Dropdown Menu from http://csswizardry.com/2011/02/creating-a-pure-css-dropdo
   text-shadow: none;
 
 }
-
+/*
 .container {
   padding-right: 15px;
   padding-left: 15px;
@@ -725,31 +725,20 @@ CSS Dropdown Menu from http://csswizardry.com/2011/02/creating-a-pure-css-dropdo
   margin-left: auto;
   width: auto;
 }
-@media (min-width: 768px) {
-  .container {
-    width: 750px;
-  }
+*/
+.container {
+  width: 1000px;
+  display: grid;
+grid-gap: 10px;
+  grid-template-columns: repeat(6, 100px);
+  /*
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(2000px, 1fr));
+    grid-template-rows: repeat(2, 200px);
+    */
 }
-@media (min-width: 992px) {
-  .container {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-  }
-}
-@media (min-width: 1900px) {
-  .container {
-    width: 1870px;
-  }
-}
-@media (min-width: 2800px) {
-  .container {
-    width: 2770px;
-  }
-}
+
 .container-fluid {
   padding-right: 15px;
   padding-left: 15px;
@@ -759,12 +748,9 @@ CSS Dropdown Menu from http://csswizardry.com/2011/02/creating-a-pure-css-dropdo
 
 .col-sm-3 {
 	text-align: center;
-	display: inline-table;
 	background-color: rgba(254, 168, 23, 0.58);
 	color: rgb(189, 15, 217);
-	margin: 10px;
 	padding: 2px;
-	width: 250px;
 	border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
               0 3px 5px rgba(0, 0, 0, .2),

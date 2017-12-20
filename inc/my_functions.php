@@ -87,7 +87,7 @@ switch ($view){
     // Now the list of administrative groups and the tasks for each one
 
     echo '<b>Group: '. $course['GroupName'] .'</b></br/>';
-    $sql = 'SELECT  id, Name FROM `Job` WHERE CourseId = '. $course['CourseId'] .' ORDER BY Name';
+    $sql = 'SELECT  id, Name FROM `Job` WHERE CourseId = '. $course['CourseId'] .' ORDER BY sortOrder';
     $result = mysqli_query($mysqli, $sql);
     while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
       echo '<a href="'.$myScript.'.php?groupId='.$course['GroupId'].'&job=' . $row['id'] . '&course='.$course['CourseId'].'">'.$row['Name'].'</a><br/>';
@@ -100,7 +100,7 @@ switch ($view){
   case "job":
   default:
   // Now the list of administrative groups and the tasks for each one
-  $result = mysqli_query($mysqli, 'SELECT  id, Name FROM `Job` ORDER BY Name');
+  $result = mysqli_query($mysqli, 'SELECT  id, Name FROM `Job` ORDER BY sortOrder');
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
     echo '<li>';
     echo '<b>'. $row['Name'] . '</b></br/>';
@@ -238,8 +238,8 @@ function listTeamsForBuilding($td, $job, $course) {
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
     echo '<div class="col-sm-3">';
-    echo '<h4>' . $row['TeamName'];
-    echo '</h4>';
+    echo '<h5>' . $row['TeamName'];
+    echo '</h5>';
     if ($row['Grade'] != '') {
       echo '  Grade: ' . $row['Grade'];
     } else {
@@ -436,7 +436,7 @@ function listTeams($id) {
     echo '<tr>';
     echo '<th>Nom</th>';
     echo '<th>Prénom</th>';
-    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job ORDER BY id');
+    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job ORDER BY sortOrder');
     $lastJobId = 0;
     while (list($id, $name, $weight) = mysqli_fetch_row($result)){
       echo '<th>'.$name.' ('.$weight.')</th>';
@@ -526,7 +526,7 @@ function listTeams($id) {
     echo '<tr>';
     echo '<th>Nom</th>';
     echo '<th>Prénom</th>';
-    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job ORDER BY id');
+    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job WHERE CourseId = '.$rowCourse['CourseId'].' ORDER BY sortOrder');
     $lastJobId = 0;
     while (list($id, $name, $weight) = mysqli_fetch_row($result)){
       echo '<th>'.$name.' ('.$weight.')</th>';
@@ -602,7 +602,7 @@ function listTeams($id) {
       echo '<th>Prénom</th>';
       echo '<th>TD</th>';
       //		    echo '<th>Team</th>';
-      $result = mysqli_query($mysqli, 'SELECT Name FROM Job ORDER BY id');
+      $result = mysqli_query($mysqli, 'SELECT Name FROM Job ORDER BY sortOrder');
       while (list($name) = mysqli_fetch_row($result)){
         echo '<th>'.$name.'</th>';
       }

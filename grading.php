@@ -67,8 +67,6 @@ if ($loggedInUser->checkPermission(array(2))) {
             //	listTeamsForGrading($_GET['td'],$_GET['job']);
             }
       } else {
-        echo "First step";
-
             //First step : select TD and task which we want to grade
             listTD('grading');
     }
