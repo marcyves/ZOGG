@@ -14,8 +14,9 @@ Share your concerns and we will share our solutions !
 
 ## To do
 
-- create the todo
-- cleanup the mess
+### Future
+- Allow peer evaluation inside a team of students
+- Allow peer evaluation from other teams/students
 
 ### General
 - Review CSS for Responsive Design
