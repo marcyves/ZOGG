@@ -21,14 +21,13 @@
 
 
 $INX_HEADER1 = "Welcome";
-$INX_PAR1    = "<p>Your home for OIS collaboration.</p>";
+$INX_PAR1    = "<p>Your home for grading.</p>";
 $INX_LINKS = "<h2>Liens utiles</h2>
              <ul>
-             <li><a href='http://knwowledge.skema.edu/courses/OPESI/'>OIS on Knowledge</a></li>
+             <li><a href='http://www.xdm-consulting.fr'>xDM Consulting</a></li>
              </ul>";
 $INX_SIDE1 = "<h2>Important</h2>
           <ul>
-          <li>At the beginning of the course, each team is credited with $init_bank SKEMs.</li>
-          <li>Theses will be used to grade the other teams during the activities.</li>
+          <li>Nothing here.</li>
           </ul>";
 ?>

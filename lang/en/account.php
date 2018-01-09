@@ -27,6 +27,6 @@ $ACC_HEADER3 = "Your gradings";
 
 $INX_LINKS = "<h2>Liens utiles</h2>
              <ul>
-             <li><a href='http://knwowledge.skema.edu/courses/OPESI/'>OIS on Knowledge</a></li>
+             <li><a href='http://www.xdm-consulting.fr/'>xDM Consulting</a></li>
              </ul>";
 ?>
