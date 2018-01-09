@@ -27,64 +27,69 @@ require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+if (isset($loggedInUser)) {
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-Page for permission level 1 (user)
+  Page for permission level 1 (user)
 
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = */
-if ($loggedInUser->checkPermission(array(1))) {
-    openPage("nothing here");
-    echo "nothing for level 1";
-}
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-         Page for permission level 2 (professor)
-
- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-if ($loggedInUser->checkPermission(array(2))) {
-    /*
-     * Le code commence ici
-    */
-    openPage("Grading");
-
-    if ($my_group->getStatus()){
-      //DEBUG      print_r($_GET);
-      /*
-      GRADING
-      Here we grade the teams
-      */
-
-      if (isset($_GET['groupId'])) {
-            if (isset($_GET['step'])) {
-                    echo "<h4>Grade updated to ".$_GET['grade']."</h4>";
-                    assignGradeToTeam($_GET['teamId'], $_GET['grade'], $_GET['comment']);
-                    listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
-            }else{
-              echo "Second step";
-                    //Second step : display list of teams
-                    listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
-            //	listTeamsForGrading($_GET['td'],$_GET['job']);
-            }
-      } else {
-            //First step : select TD and task which we want to grade
-            listTD('grading');
-    }
-    //Third step : update grade
-  } else {
-    echo ("<h2>You have first to select the team you want to work on</h2>");
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = */
+  if ($loggedInUser->checkPermission(array(1))) {
+      openPage("nothing here");
+      echo "nothing for level 1";
   }
+
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+           Page for permission level 2 (professor)
+
+   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  if ($loggedInUser->checkPermission(array(2))) {
+      /*
+       * Le code commence ici
+      */
+      openPage("Grading");
+
+      if ($my_group->getStatus()){
+        //DEBUG      print_r($_GET);
+        /*
+        GRADING
+        Here we grade the teams
+        */
+
+        if (isset($_GET['groupId'])) {
+              if (isset($_GET['step'])) {
+                      echo "<h4>Grade updated to ".$_GET['grade']."</h4>";
+                      assignGradeToTeam($_GET['teamId'], $_GET['grade'], $_GET['comment']);
+                      listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
+              }else{
+                echo "Second step";
+                      //Second step : display list of teams
+                      listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
+              //	listTeamsForGrading($_GET['td'],$_GET['job']);
+              }
+        } else {
+              //First step : select TD and task which we want to grade
+              listTD('grading');
+      }
+      //Third step : update grade
+    } else {
+      echo ("<h2>You have first to select the team you want to work on</h2>");
+    }
+  }
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+  Page for permission level 3 (administrator)
+
+   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  if ($loggedInUser->checkPermission(array(3))) {
+      openPage("nothing here");
+      echo "nothing for level 3";
+  }
+} else {
+  openPage("You have to loggin first");
+  echo "User not logged.";
+
 }
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-Page for permission level 3 (administrator)
-
- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-if ($loggedInUser->checkPermission(array(3))) {
-    openPage("nothing here");
-    echo "nothing for level 3";
-}
-
 closePage();
 
 ?>

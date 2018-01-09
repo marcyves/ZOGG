@@ -26,59 +26,62 @@ require_once("themes/$theme/theme.php");
 require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
+if (isset($loggedInUser)) {
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+  Page for permission level 1 (user)
 
-Page for permission level 1 (user)
-
-= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = */
-if ($loggedInUser->checkPermission(array(1))) {
-    openPage("nothing here");
-    echo "nothing for level 1";
-}
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-         Page for permission level 2 (professor)
-
- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-if ($loggedInUser->checkPermission(array(2))) {
-  /*
-   * Le code commence ici
-  */
-  //DEBUG	print_r($_GET);
-  openPage("Les scores globaux");
-
-  if (isset($_GET['cmd'])) {
-    $cmd = $_GET['cmd'];
-  } else {
-    $cmd = "";
+  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = */
+  if ($loggedInUser->checkPermission(array(1))) {
+      openPage("nothing here");
+      echo "nothing for level 1";
   }
 
-  if (displayCurrentGroup()){
-    switch ($cmd){
-    case 'fullist';
-      listAll();
-    	// listAllTeams();
-    break;
-    default;
-      displayGroupGrades();
-      echo "<ul><li><a href='home.php?cmd=fullist'>Liste complète</a></li></ul>";
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+           Page for permission level 2 (professor)
+
+   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  if ($loggedInUser->checkPermission(array(2))) {
+    /*
+     * Le code commence ici
+    */
+    //DEBUG	print_r($_GET);
+    openPage("Les scores globaux");
+
+    if (isset($_GET['cmd'])) {
+      $cmd = $_GET['cmd'];
+    } else {
+      $cmd = "";
     }
-  } else {
-    echo ("<h2>You have first to select the team you want to work on</h2>");
+
+    if (displayCurrentGroup()){
+      switch ($cmd){
+      case 'fullist';
+        listAll();
+      	// listAllTeams();
+      break;
+      default;
+        displayGroupGrades();
+        echo "<ul><li><a href='home.php?cmd=fullist'>Liste complète</a></li></ul>";
+      }
+    } else {
+      echo ("<h2>You have first to select the team you want to work on</h2>");
+    }
   }
+  /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+  Page for permission level 3 (administrator)
+
+   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+  if ($loggedInUser->checkPermission(array(3))) {
+      openPage("nothing here");
+      echo "nothing for level 3";
+  }
+} else {
+  openPage("You have to loggin first");
+  echo "User not logged.";
 }
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-
-Page for permission level 3 (administrator)
-
- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-if ($loggedInUser->checkPermission(array(3))) {
-    openPage("nothing here");
-    echo "nothing for level 3";
-}
-
 closePage();
 
 ?>
