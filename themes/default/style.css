@@ -6,6 +6,23 @@
         Purpose of the stylesheet follows.
 */
 
+.col-sm-3 {
+  margin-left: 20px;
+	text-align: center;
+	background-color: rgba(254, 168, 23, 0.58);
+	color: rgb(189, 15, 217);
+	padding: 2px;
+	border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 20px 20px rgba(0, 0, 0, .15);
+}
+
+.col-sm-3 img {
+    width: 20px;
+}
+
 .breadcrumb {
   background-color: rgba(242, 145, 16, 0.5);
   border-radius: 8px;
@@ -105,8 +122,8 @@
 }
 
 .button {
-  width: 90px;
-  padding: 8px;
+  width: 60px;
+  padding: 2px;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
@@ -296,7 +313,7 @@ main, nav, #container, #logo, #site_content, footer {
 }
 
 main {
-  margin: 50px auto;
+  margin:  20px 50px 50px 50px;
   border-radius: 15px 15px 15px 15px;
   -moz-border-radius: 15px 15px 15px 15px;
   -webkit-border: 15px 15px 15px 15px;
@@ -471,7 +488,6 @@ nav {
   text-align: left;
   margin: 0 0 15px 0;
   float: left;
-  font-size: 120%;
   padding: 14px 0 0 0;
 }
 
@@ -729,8 +745,8 @@ CSS Dropdown Menu from http://csswizardry.com/2011/02/creating-a-pure-css-dropdo
 .container {
   width: 1000px;
   display: grid;
-grid-gap: 10px;
-  grid-template-columns: repeat(6, 100px);
+  grid-gap: 2px;
+  grid-template-columns: repeat(5, 150px);
   /*
     display: grid;
     grid-gap: 5px;
@@ -739,25 +755,39 @@ grid-gap: 10px;
     */
 }
 
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+    grid-template-columns: repeat(3, 180px);
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+    grid-template-columns: repeat(4, 180px);
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+    grid-template-columns: repeat(6, 180px);
+  }
+}
+@media (min-width: 1600px) {
+  .container {
+    width: 1870px;
+    grid-template-columns: repeat(8, 180px);
+  }
+}
+@media (min-width: 2000px) {
+  .container {
+    width: 2770px;
+    grid-template-columns: repeat(10, 180px);
+  }
+
 .container-fluid {
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
-}
-
-.col-sm-3 {
-	text-align: center;
-	background-color: rgba(254, 168, 23, 0.58);
-	color: rgb(189, 15, 217);
-	padding: 2px;
-	border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
-              0 3px 5px rgba(0, 0, 0, .2),
-              0 5px 10px rgba(0, 0, 0, .2),
-              0 20px 20px rgba(0, 0, 0, .15);
-}
-
-.col-sm-3 img {
-    width: 28px;
 }

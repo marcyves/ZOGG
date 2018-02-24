@@ -106,8 +106,8 @@ function openPage($title)
 
 echo "</div>
 <div class='content'>".
-        '<img src="themes/default/images/examples.png" alt="examples" />
-            <h1>'.$title.'</h1>';
+        '<h1><img src="themes/default/images/examples.png" alt="examples" />'.
+        $title.'</h1>';
 
 // Display error or success messages
 if (!empty($successes)) {

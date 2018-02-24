@@ -74,9 +74,9 @@ $myScript = "admin";
 }
 */
 
-echo '<div class=container>';
-//echo '<div class="row">';
-echo '<div class="col-sm-3">';
+echo '<div class="container">';
+// echo '<div class="row">';
+// echo '<div class="col-sm-3">';
 
 $view = "td";
 
@@ -86,15 +86,16 @@ switch ($view){
   case "td":
     // Now the list of administrative groups and the tasks for each one
 
-    echo '<b>Group: '. $course['GroupName'] .'</b></br/>';
+    echo '<b>Group: '. $course['GroupName'] .'</b><ul>';
     $sql = 'SELECT  id, Name FROM `Job` WHERE CourseId = '. $course['CourseId'] .' ORDER BY sortOrder';
     $result = mysqli_query($mysqli, $sql);
     while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-      echo '<a href="'.$myScript.'.php?groupId='.$course['GroupId'].'&job=' . $row['id'] . '&course='.$course['CourseId'].'">'.$row['Name'].'</a><br/>';
+      echo '<li><a href="'.$myScript.'.php?groupId='.$course['GroupId'].'&job=' . $row['id'] . '&course='.$course['CourseId'].'">'.$row['Name'].'</a></li>';
     }
 
+    echo '</ul>';
+    echo '</div>';
 //    echo '</div>';
-    echo '</div></div>';
     mysqli_free_result($result);
   break;
   case "job":
@@ -208,7 +209,7 @@ function listTeamsForBuilding($td, $job, $course) {
   Allows to create new teams.
 
 */
-    echo '<div class=container>';
+    echo '<div class="container">';
     echo '<div class="col-sm-3">';
     echo "<form method='GET'>
     <input type='text'   name='teamName'  value='?'>
@@ -260,10 +261,10 @@ function listTeamsForBuilding($td, $job, $course) {
 
     echo "</div>";
   }
-  echo "</div>";
 //  echo "</div>";
 
   displayFreeStudentsForEnroll( $td, $job, $course);
+  echo "</div>";
   mysqli_free_result($result);
 }
 
@@ -573,10 +574,10 @@ function listTeams($id) {
         }
         if ($finalWeight != 0) {
           $tmp_grade = $finalGrade/$finalWeight;
+          $tmpLine .= '<td>' . number_format($tmp_grade,2) . '</td>';
         } else {
-          $tmp_grade = "&nbsp;";
+          $tmpLine .= '<td>&nbsp;</td>';
         }
-        $tmpLine .= '<td>' . number_format($tmp_grade,2) . '</td>';
         $tmpLine .= '</tr>';
         echo $tmpLine;
       }
