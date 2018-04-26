@@ -683,7 +683,12 @@ function listTeams($id) {
       } else {
         $sel = "";
       }
-          $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."</option>";
+      // Hugly
+      if (isset($row['CourseYear'])){
+        $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."(".$row['CourseYear'].")</option>";
+      } else {
+        $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."</option>";
+      }
     }
     $tmp .= "</select>
     <input type='submit' value='Change'>
