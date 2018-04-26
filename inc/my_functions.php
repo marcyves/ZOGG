@@ -751,4 +751,32 @@ function listTeams($id) {
     return buildSelect($label, $name, 'GroupId', 'GroupName', $sql);
   }
 
+  function schoolManagement(){
+    global $mysqli;
+
+    $result1 = mysqli_query($mysqli, 'SELECT CampusId, CampusName FROM Campus ORDER BY CampusName');
+    $lastJobId = 0;
+
+    while (list($CampusId, $CampusName) = mysqli_fetch_row($result1)){
+      echo '<div class="school-details">';
+      echo '<h2>'.$CampusName.'</h2>';
+      $result2 = mysqli_query($mysqli, "SELECT ProgramId, ProgramName FROM Program WHERE ProgramCampusId = '$CampusId' ORDER BY ProgramName ;");
+      while (list($ProgramId, $ProgramName) = mysqli_fetch_row($result2)){
+        echo '<h3>'.$ProgramName.' Course List</h3>';
+        echo '<ul>';
+        $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
+        while (list($id, $name, $year) = mysqli_fetch_row($result3)){
+          echo '<li>'.$name.' ('.$year.')</li>';
+        }
+        echo '</ul>';
+        echo '<form>
+        <input type="text" name="courseName" size="30"> (<input type="text" name="courseYear" size="4">)<br>
+        <input type="hidden" name="cmd" value="newCourse">
+        <input type="submit" value="Create New Course">
+        </form>';
+      }
+      echo '</div>';
+    }
+  }
+
   ?>

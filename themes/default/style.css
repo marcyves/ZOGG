@@ -13,6 +13,27 @@
   color:rgba(10, 68, 217, 1);
 }
 
+.school-details {
+  margin: 0px 0px 16px 0px;
+	/* text-align: center; */
+	background-color: rgba(254, 168, 23, 0.58);
+	color: rgb(189, 15, 217);
+	padding: 0px 20px 8px 8px;
+	border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 20px 20px rgba(0, 0, 0, .15);
+}
+
+.school-details ul {
+  padding: 0px 0px 8px 8px;
+}
+
+.school-details h2, h3 {
+  margin: 8px 0 8px 0;
+}
+
 .col-sm-3 {
   margin-left: 20px;
 	text-align: center;
@@ -227,11 +248,11 @@ h1, h2 {
 }
 
 h3 {
-  margin: 0px 0px 0px 50px;
+/*  margin: 0px 0px 0px 50px;*/
   padding: 0px 0 0px 0;
   color: #968580;
-  font-size: 95%;
-  position:absolute;
+/*  font-size: 95%; */
+/*  position:absolute; */
 }
 
 h2 {
