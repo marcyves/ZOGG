@@ -125,13 +125,13 @@ function listStudentsByTeam($teamId, $td, $job, $course) {
   $result = mysqli_query($mysqli, 'SELECT Student.ID, Prenom, NOM  FROM `Student` , StudentTeam WHERE Student.ID = idStudent AND idTeam = \''.$teamId.'\' ORDER BY StudentGroupId');
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<p>';
+    echo '<div class="student-item">';
+    echo '<a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">';
+    echo '<img src="themes/default/images/delete.png"></a>';
     echo ucfirst(strtolower($row['Prenom'])) . " ";
     echo ucfirst(strtolower($row['NOM'])) . ' ';
-    echo '<a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">';
-    echo '<img src="themes/default/images/delete.png">';
 //    echo '<span class="delete">&nbsp;</span>';
-    echo '</a></p>';
+    echo '</div>';
   }
   mysqli_free_result($result);
 }
@@ -324,12 +324,12 @@ function displayFreeStudentsForEnroll($groupId, $jobId, $course) {
   if (mysqli_num_rows($result)>0) {
     echo '<div class="col-sm-3">';
     echo "<h2>Students in this group without a team</h2>";
-    echo "<ul>";
 
     while (($student = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-      echo "<li>".$student['NOM']." ".$student['Prenom']."</li>";
+      echo '<div class="student-item">';
+      echo $student['NOM']." ".$student['Prenom'];
+      echo "</div>";
     }
-    echo "</ul>";
     echo "</div>";
   }
 }
