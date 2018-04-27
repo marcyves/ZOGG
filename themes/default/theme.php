@@ -36,7 +36,11 @@ function openPage($title)
           { //Links for permission level 2 (professor)
   	   		    echo '<li><a href="grading.php">Team Grading</a></li>'.
               '<li><a href="building.php">Team Building</a></li>'.
-              '<li><a href="admin.php">Administration</a></li>'.
+              '<li><a href="student.php">Student Management</a></li>';
+  		    }
+          if ($loggedInUser->checkPermission(array(3)))
+          { //Links for permission level 3 (admin)
+  	   		    echo '<li><a href="admin.php">Administration</a></li>'.
               '<li><a href="student.php">Student Management</a></li>';
   		    }
 	     }
@@ -74,15 +78,12 @@ function openPage($title)
 	        $text = '</div>'.
           '<h3>Admin Menu</h3>'.
           "<ul>
-	        <li><a href='admin.php'>Admin</a></li>
-	        </ul>";
-          /*
-            	<li><a href='admin_configuration.php'>Admin Configuration</a></li>
-          	<li><a href='admin_users.php'>Admin Users</a></li>
-          	<li><a href='admin_permissions.php'>Admin Permissions</a></li>
-          	<li><a href='admin_pages.php'>Admin Pages</a></li>
-          	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>
-           */
+        	<li><a href='admin_configuration.php'>Admin Configuration</a></li>
+        	<li><a href='admin_users.php'>Admin Users</a></li>
+        	<li><a href='admin_permissions.php'>Admin Permissions</a></li>
+        	<li><a href='admin_pages.php'>Admin Pages</a></li>
+        	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>";
+
            echo displaySideMenu($text);
        }
 } else {

@@ -690,9 +690,11 @@ function listTeams($id) {
         $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."</option>";
       }
     }
-    $tmp .= "</select>
-    <input type='submit' value='Change'>
-              </form>";
+    $tmp .= "</select>";
+    if ($name != 'admin_init'){
+      $tmp .= "<input type='submit' value='Change'>";
+    }
+    $tmp .= "</form>";
 
     mysqli_free_result($rc);
     return $tmp;
@@ -764,19 +766,39 @@ function listTeams($id) {
       while (list($ProgramId, $ProgramName) = mysqli_fetch_row($result2)){
         echo '<h3>'.$ProgramName.' Course List</h3>';
         echo '<ul>';
-        $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
-        while (list($id, $name, $year) = mysqli_fetch_row($result3)){
-          echo '<li>'.$name.' ('.$year.')</li>';
+        $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
+        while (list($id, $name, $year, $semester) = mysqli_fetch_row($result3)){
+          echo '<li>'.$name.' ('.$year.', '.$semester.')</li>';
         }
         echo '</ul>';
-        echo '<form>
-        <input type="text" name="courseName" size="30"> (<input type="text" name="courseYear" size="4">)<br>
+        echo '<div class="school-details">';
+        echo '<h2>New Course</h2><form method="post">'.
+        '<input type="text" name="CourseName" size="30"> (<input type="text" name="CourseYear" size="4">, <input type="text" name="CourseSemester" size="5">)<br>
         <input type="hidden" name="cmd" value="newCourse">
+        <input type="hidden" name="CampusId" value="'.$CampusId.'">
+        <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
         <input type="submit" value="Create New Course">
         </form>';
+        echo '</div>';
       }
+      echo '<div class="school-details">';
+      echo '<h2>New Program</h2><form method="post">'.
+      '<input type="text" name="ProgramName" size="30"><br>
+      <input type="hidden" name="CampusId" value="'.$CampusId.'">
+      <input type="hidden" name="cmd" value="newProgram">
+      <input type="submit" value="Create New Program">
+      </form>';
+      echo '</div>';
       echo '</div>';
     }
+    echo '<div class="school-details">';
+    echo '<h2>New School/Campus</h2><form method="post">
+    <input type="text" name="campusName" size="30"><br>
+    <input type="hidden" name="cmd" value="newCampus">
+    <input type="submit" value="Create New School">
+    </form>';
+    echo '</div>';
+
   }
 
   ?>
