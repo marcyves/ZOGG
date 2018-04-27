@@ -12,4 +12,4 @@ I am using it for several years and implement new features as soon as I require 
 
 Share your concerns and we will share our solutions !
 
-More information on the Wiki
+More information on the [Wiki](https://github.com/marcyves/ZOGG/wiki)
