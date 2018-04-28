@@ -6,6 +6,20 @@
         Purpose of the stylesheet follows.
 */
 
+.course-list form{
+  display: inline;
+}
+.course-list ul{
+  background: rgba(238, 150, 1, 0.81);
+  padding: 20px;
+}
+.course-list li{
+  background: rgba(249, 188, 86, 0.58);
+  margin: 5px;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
 .student-item {
   text-align: left;
   padding-left: 6px;

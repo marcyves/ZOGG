@@ -64,65 +64,88 @@ if ($loggedInUser->checkPermission(array(3))) {
 
   openPage("Administration");
 
-print_r($_POST);
-
-  if ($my_group->getStatus()){
-    //DEBUG      print_r($_GET);
-    if (isset($_POST['cmd'])) {
-      $cmd = $_POST['cmd'];
-    } else {
-      $cmd = "";
-    }
-    switch ($cmd) {
-      case 'newCampus':
-        $sql = "INSERT  INTO Campus  (CampusName) VALUES ('".$_POST['campusName']."')";
-        $result = mysqli_query($mysqli, $sql);
-        echo "<h2>Campus ".$_POST['campusName']." created</h2>";
-        schoolManagement();
-      break;
-      case 'newProgram':
-        $sql = "INSERT  INTO Program  (ProgramName, ProgramCampusId) VALUES ('".$_POST['ProgramName']."', '".$_POST['CampusId']."')";
-        $result = mysqli_query($mysqli, $sql);
-        echo "<h2>Program ".$_POST['ProgramName']." created</h2>";
-        schoolManagement();
-      break;
-      case 'newCourse':
-        $sql = "INSERT  INTO Course  (CourseName, CourseProgramId, CourseYear, CourseSemester) VALUES ('".$_POST['CourseName']."', '".$_POST['ProgramId']."', '".$_POST['CourseYear']."', '".$_POST['CourseSemester']."')";
-        $result = mysqli_query($mysqli, $sql);
-        echo "<h2>Course ".$_POST['CourseName']." (".$_POST['CourseYear'].") created</h2>";
-        schoolManagement();
-      break;
-      case 'removeCampus':
-        // test if campus empty
-        echo "<h4>You are about to remove School ".$_GET['schoolId']." from group ".$_GET['groupId']."</h4>";
-        echo "<a href='?cmd=remove2&studentId=".$_GET['studentId']."&groupId=".$_GET['groupId']."'>OK ?</a>";
-      break;
-      case 'remove2':
-        $sql = "DELETE FROM `StudentTeam` WHERE IdStudent =  '".$_GET['studentId']."' AND IdTeam = '".$_GET['groupId']."'";
-        $result = mysqli_query($mysqli, $sql);
-      break;
-      case 'updateCampus':
-      echo "<h2></h2>";
-      break;
-      case 'updateCourse':
-      echo "<h2></h2>";
-      break;
-      case 'updateProgram':
-      echo "<h2></h2>";
-      break;
-      case 'removeProgram':
-      echo "<h2></h2>";
-      break;
-      case 'removeCourse':
-      echo "<h2></h2>";
-      break;
-      default:
-        schoolManagement();
-      break;
-    }
+  print_r($_POST);
+  if (isset($_POST['cmd'])) {
+    $cmd = $_POST['cmd'];
   } else {
-    echo ("<h2>You have first to select the team you want to work on</h2>");
+    $cmd = "";
   }
+  switch ($cmd) {
+    case 'newCampus':
+      $sql = "INSERT  INTO Campus  (CampusName) VALUES ('".$_POST['campusName']."')";
+      $result = mysqli_query($mysqli, $sql);
+      echo "<h2>Campus ".$_POST['campusName']." created</h2>";
+    break;
+    case 'newProgram':
+      $sql = "INSERT  INTO Program  (ProgramName, ProgramCampusId) VALUES ('".$_POST['ProgramName']."', '".$_POST['CampusId']."')";
+      $result = mysqli_query($mysqli, $sql);
+      echo "<h2>Program ".$_POST['ProgramName']." created</h2>";
+    break;
+    case 'newCourse':
+      $sql = "INSERT  INTO Course  (CourseName, CourseProgramId, CourseYear, CourseSemester) VALUES ('".$_POST['CourseName']."', '".$_POST['ProgramId']."', '".$_POST['CourseYear']."', '".$_POST['CourseSemester']."')";
+      echo "<p>$sql</p>";
+      $result = mysqli_query($mysqli, $sql);
+      echo "<h2>Course ".$_POST['CourseName']." (".$_POST['CourseYear'].") created</h2>";
+    break;
+    case 'removeCampus':
+      // test if campus empty
+      echo "<h4>You are about to remove School ".$_GET['schoolId']." from group ".$_GET['groupId']."</h4>";
+      echo "<a href='?cmd=remove2&studentId=".$_GET['studentId']."&groupId=".$_GET['groupId']."'>OK ?</a>";
+    break;
+    case 'remove2':
+      $sql = "DELETE FROM `StudentTeam` WHERE IdStudent =  '".$_GET['studentId']."' AND IdTeam = '".$_GET['groupId']."'";
+      $result = mysqli_query($mysqli, $sql);
+    break;
+    case 'updateCampus':
+    echo "<h2></h2>";
+    break;
+    case 'updateCourse':
+    echo "<h2></h2>";
+    break;
+    case 'updateProgram':
+    echo "<h2></h2>";
+    break;
+    case 'discardCampus':
+    $sql = "SELECT `CampusName` FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
+    $result = mysqli_query($mysqli, $sql);
+    if(mysqli_num_rows($result)>0){
+      list($CampusName) = mysqli_fetch_row($result);
+      $sql = "DELETE FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
+      $result = mysqli_query($mysqli, $sql);
+      echo "<h2>Campus $CampusName deleted.</h2>";
+    } else {
+      echo "<h2>Invalid Campus id, nothing deleted.</h2>";
+    }
+    break;
+    case 'discardProgram':
+      $sql = "SELECT `ProgramName` FROM `Program` WHERE ProgramId =  '".$_POST['ProgramId']."'";
+      $result = mysqli_query($mysqli, $sql);
+      if(mysqli_num_rows($result)>0){
+        list($ProgramName) = mysqli_fetch_row($result);
+        $sql = "DELETE FROM `Program` WHERE ProgramId =  '".$_POST['ProgramId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>Progam $ProgramName deleted.</h2>";
+      } else {
+        echo "<h2>Invalid program id, nothing deleted.</h2>";
+      }
+    break;
+    case 'discardCourse':
+      $sql = "SELECT `CourseName` FROM `Course` WHERE CourseId =  '".$_POST['CourseId']."'";
+      $result = mysqli_query($mysqli, $sql);
+      if(mysqli_num_rows($result)>0){
+        list($CourseName) = mysqli_fetch_row($result);
+        $sql = "DELETE FROM `Course` WHERE CourseId =  '".$_POST['CourseId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>CourseId $CourseName deleted.</h2>";
+      } else {
+        echo "<h2>Invalid CourseId, nothing deleted.</h2>";
+      }
+    break;
+    default:
+    // nothing here
+    break;
+  }
+  schoolManagement();
 }
 
 closePage();

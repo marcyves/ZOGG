@@ -762,32 +762,53 @@ function listTeams($id) {
     while (list($CampusId, $CampusName) = mysqli_fetch_row($result1)){
       echo '<div class="school-details">';
       echo '<h2>'.$CampusName.'</h2>';
+
       $result2 = mysqli_query($mysqli, "SELECT ProgramId, ProgramName FROM Program WHERE ProgramCampusId = '$CampusId' ORDER BY ProgramName ;");
-      while (list($ProgramId, $ProgramName) = mysqli_fetch_row($result2)){
-        echo '<h3>'.$ProgramName.' Course List</h3>';
-        echo '<ul>';
-        $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
-        while (list($id, $name, $year, $semester) = mysqli_fetch_row($result3)){
-          echo '<li>'.$name.' ('.$year.', '.$semester.')</li>';
+      if (mysqli_num_rows($result2)>0){
+        while (list($ProgramId, $ProgramName) = mysqli_fetch_row($result2)){
+          echo '<h3>'.$ProgramName.' Course List</h3>';
+          $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
+          if (mysqli_num_rows($result3)>0){
+            echo '<ul class="course-list">';
+            while (list($id, $name, $year, $semester) = mysqli_fetch_row($result3)){
+              echo '<li><form method="post">
+              <input type="hidden" name="CourseId" value="'.$id.'">
+              <button type="submit" name="cmd" value="discardCourse">delete</button>
+              <button type="submit" name="cmd" value="updateCourse">update</button>
+              </form>'.$name.' ('.$year.', '.$semester.')</li>';
+            }
+            echo '</ul>';
+          } else {
+            echo '<form method="post">The program is empty, you can <input type="submit" value="delete"> it.<br>
+            <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
+            <input type="hidden" name="cmd" value="discardProgram">
+            </form>';
+          }
+
+          echo '<div class="school-details">';
+          echo '<h2>New Course</h2><form method="post">'.
+          '<input type="text" name="CourseName" size="30"> (<input type="text" name="CourseYear" size="4">, <input type="text" name="CourseSemester" size="5">)<br>
+          <input type="hidden" name="cmd" value="newCourse">
+          <input type="hidden" name="CampusId" value="'.$CampusId.'">
+          <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
+          <input type="submit" value="Create New Course">
+          </form>';
+          echo '</div>';
         }
-        echo '</ul>';
+
         echo '<div class="school-details">';
-        echo '<h2>New Course</h2><form method="post">'.
-        '<input type="text" name="CourseName" size="30"> (<input type="text" name="CourseYear" size="4">, <input type="text" name="CourseSemester" size="5">)<br>
-        <input type="hidden" name="cmd" value="newCourse">
+        echo '<h2>New Program</h2><form method="post">'.
+        '<input type="text" name="ProgramName" size="30"><br>
         <input type="hidden" name="CampusId" value="'.$CampusId.'">
-        <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
-        <input type="submit" value="Create New Course">
+        <input type="hidden" name="cmd" value="newProgram">
+        <input type="submit" value="Create New Program">
         </form>';
-        echo '</div>';
+      } else {
+        echo '<form method="post">This school or campus is empty, you can <input type="submit" value="delete"> it.<br>
+        <input type="hidden" name="CampusId" value="'.$CampusId.'">
+        <input type="hidden" name="cmd" value="discardCampus">
+        </form>';
       }
-      echo '<div class="school-details">';
-      echo '<h2>New Program</h2><form method="post">'.
-      '<input type="text" name="ProgramName" size="30"><br>
-      <input type="hidden" name="CampusId" value="'.$CampusId.'">
-      <input type="hidden" name="cmd" value="newProgram">
-      <input type="submit" value="Create New Program">
-      </form>';
       echo '</div>';
       echo '</div>';
     }
