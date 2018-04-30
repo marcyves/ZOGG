@@ -25,8 +25,11 @@ http://usercake.com
 */
 
 require_once("models/config.php");
-//if (!securePage($_SERVER['PHP_SELF'])){die();}
+if (!securePage($_SERVER['PHP_SELF'])){die();}
 require_once("inc/functions.php");
+require_once("themes/$theme/theme.php");
+require_once("inc/classes.php");
+require_once("inc/my_functions.php");
 
 openPage("Administration des utilisateurs");
 
@@ -63,10 +66,10 @@ foreach ($userData as $v1) {
 	<td>".$v1['title']."</td>
 	<td>
 	";
-	
+
 	//Interprety last login
 	if ($v1['last_sign_in_stamp'] == '0'){
-		echo "Never";	
+		echo "Never";
 	}
 	else {
 		echo date("j M, Y", $v1['last_sign_in_stamp']);
