@@ -48,6 +48,17 @@
   margin: 8px 0 8px 0;
 }
 
+.program-details {
+  margin: 0px 0px 0px 0px;
+	background-color: rgba(210, 224, 181, 0.58);
+	padding: 0px 8px 8px 8px;
+	border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 20px 20px rgba(0, 0, 0, .15);
+}
+
 .col-sm-3 {
   margin-left: 20px;
 	text-align: center;
