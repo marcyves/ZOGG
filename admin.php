@@ -26,13 +26,6 @@ require_once("themes/$theme/theme.php");
 require_once("inc/classes.php");
 require_once("inc/my_functions.php");
 
-ini_set("display_errors", 1);
-ini_set("track_errors", 1);
-ini_set("html_errors", 1);
-
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
-
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 Page for permission level 1 (user)

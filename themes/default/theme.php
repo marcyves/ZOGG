@@ -40,8 +40,8 @@ function openPage($title)
   		    }
           if ($loggedInUser->checkPermission(array(3)))
           { //Links for permission level 3 (admin)
-  	   		    echo '<li><a href="admin.php">Administration</a></li>'.
-              '<li><a href="student.php">Student Management</a></li>';
+  	   		    echo '<li><a href="admin.php">Campus and Courses</a></li>'.
+              '<li><a href="admin_assignment.php">Assignment Management</a></li>';
   		    }
 	     }
    	   echo "<li><a href='user_settings.php'>Profile</a></li>".
@@ -75,14 +75,14 @@ function openPage($title)
 	     //Links for permission level 3 (default admin)
 	     if ($loggedInUser->checkPermission(array(3)))
        {
-	        $text = '</div>'.
-          '<h3>Admin Menu</h3>'.
+	        $text = '<h3>Admin Menu</h3>'.
           "<ul>
         	<li><a href='admin_configuration.php'>Admin Configuration</a></li>
         	<li><a href='admin_users.php'>Admin Users</a></li>
         	<li><a href='admin_permissions.php'>Admin Permissions</a></li>
         	<li><a href='admin_pages.php'>Admin Pages</a></li>
-        	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>";
+        	<li><a href='admin_init.php'>Initialisation des comptes users</a></li>".
+          '</div>';
 
            echo displaySideMenu($text);
        }

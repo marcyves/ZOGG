@@ -75,8 +75,8 @@ if (isset($loggedInUser)) {
 
    = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
   if ($loggedInUser->checkPermission(array(3))) {
-      openPage("nothing here");
-      echo "nothing for level 3";
+      openPage("Administration");
+      echo "Welcome to ZOGG administration.";
   }
 } else {
   openPage("You have to loggin first");
