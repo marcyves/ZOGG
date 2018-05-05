@@ -837,82 +837,35 @@ function listTeams($id) {
   function assignmentManagement(){
     global $mysqli;
 
-    $result1 = mysqli_query($mysqli, 'SELECT CampusId, CampusName FROM Campus ORDER BY CampusName');
+    $result1 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester, ProgramName, CampusName".
+              " FROM Course C, Campus S, Program P ".
+              " WHERE CourseProgramId = ProgramId  AND ProgramCampusId = CampusId ORDER BY CampusName, ProgramName, CourseYear, CourseName ;");
     $lastJobId = 0;
 
-    while (list($CampusId, $CampusName) = mysqli_fetch_row($result1)){
+    while (list($CourseId, $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName) = mysqli_fetch_row($result1)){
       echo '<div class="school-details">';
-      echo '<h2>'.$CampusName.'</h2>';
+      echo "<h2>$CourseId $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName </h2>";
 
-      echo '<div class="school-details">';
-
-      $result2 = mysqli_query($mysqli, "SELECT ProgramId, ProgramName FROM Program WHERE ProgramCampusId = '$CampusId' ORDER BY ProgramName ;");
-      if (mysqli_num_rows($result2)>0){
-        while (list($ProgramId, $ProgramName) = mysqli_fetch_row($result2)){
-
-          echo '<h3>'.$ProgramName.' Course List</h3>';
-
-          echo '<div class="program-details">';
-
-          $result3 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester FROM Course WHERE CourseProgramId = '$ProgramId' ORDER BY CourseYear, CourseName ;");
-          if (mysqli_num_rows($result3)>0){
-            echo '<ul class="course-list">';
-            while (list($id, $name, $year, $semester) = mysqli_fetch_row($result3)){
-              echo '<li><form method="post">
-              <input type="hidden" name="CourseId" value="'.$id.'">
-              <button type="submit" name="cmd" value="discardCourse">delete</button>
-              <button type="submit" name="cmd" value="updateCourse">update</button>
-              </form>'.$name.' ('.$year.', '.$semester.')</li>';
-            }
-            echo '</ul>';
-
-          } else {
-            echo '<form method="post">The program is empty, you can <input type="submit" value="delete"> it.<br>
-            <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
-            <input type="hidden" name="cmd" value="discardProgram">
-            </form>';
-          }
-          echo '<h2>New Course</h2>
-          <form method="post">'.
-          '<input type="text" name="CourseName" size="30"> (<input type="text" name="CourseYear" size="4">, <input type="text" name="CourseSemester" size="5">)<br>
-          <input type="hidden" name="cmd" value="newCourse">
-          <input type="hidden" name="CampusId" value="'.$CampusId.'">
-          <input type="hidden" name="ProgramId" value="'.$ProgramId.'">
-          <input type="submit" value="Create New Course">
-          </form>';
-          echo'</div>'; // Close program-details
-        }
-      } else {
-        echo '<form method="post">This school or campus is empty, you can <input type="submit" value="delete"> it.<br>
-        <input type="hidden" name="CampusId" value="'.$CampusId.'">
-        <input type="hidden" name="cmd" value="discardCampus">
-        </form>';
+      $result2 = mysqli_query($mysqli, "SELECT id, Name, weight, sortOrder FROM Job WHERE CourseId = '$CourseId' ORDER BY sortOrder");
+      echo "<ul>";
+      while (list($JobId, $JobName, $JobWeigh, $JobSortOrder) = mysqli_fetch_row($result2)) {
+        echo "<li>$JobName, $JobWeigh, $JobSortOrder</li>";
       }
-      echo '</div>';
+      echo "</ul>";
 
       echo '<div class="school-details">';
-      echo '<h2>New Program</h2>'.
+      echo '<h2>New Assignment</h2>'.
       '<form method="post">'.
-      '<input type="text" name="ProgramName" size="30"><br>
-      <input type="hidden" name="CampusId" value="'.$CampusId.'">
-      <input type="hidden" name="cmd" value="newProgram">
-      <input type="submit" value="Create New Program">
+      '<input type="text" name="AssignmentName" size="30"> ('.
+      '<input type="text" name="AssignmentWeight" size="8">) Order : '.
+      '<input type="text" name="AssignmentSortOrder" size="3"><br>
+      <input type="hidden" name="CourseId" value="'.$CourseId.'">
+      <input type="hidden" name="cmd" value="newAssignment">
+      <input type="submit" value="Create New Assignment">
       </form>';
       echo '</div>';
       echo '</div>';
     }
-
-    // End loop, let admin create a school
-    echo '<div class="school-details">';
-    echo '<h2>New School/Campus</h2>
-    <form method="post">
-    <input type="text" name="campusName" size="30"><br>
-    <input type="hidden" name="cmd" value="newCampus">
-    <input type="submit" value="Create New School">
-    </form>';
-    echo '</div>';
-
-
   }
 
   ?>
