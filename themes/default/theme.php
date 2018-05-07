@@ -36,7 +36,8 @@ function openPage($title)
           { //Links for permission level 2 (professor)
   	   		    echo '<li><a href="grading.php">Team Grading</a></li>'.
               '<li><a href="building.php">Team Building</a></li>'.
-              '<li><a href="student.php">Student Management</a></li>';
+              '<li><a href="student.php">Student Management</a></li>'.
+              '<li><a href="admin_assignment.php">Assignment Management</a></li>';
   		    }
           if ($loggedInUser->checkPermission(array(3)))
           { //Links for permission level 3 (admin)

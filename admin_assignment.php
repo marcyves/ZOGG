@@ -33,7 +33,8 @@ Page for permission level 1 (user)
 = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  = */
 if ($loggedInUser->checkPermission(array(1))) {
     openPage("nothing here");
-    echo "You are not allowed to anything here.";
+    echo "You can only see the assignments for your courses.";
+    assignmentManagement(1);
 }
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
@@ -43,7 +44,8 @@ if ($loggedInUser->checkPermission(array(1))) {
  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 if ($loggedInUser->checkPermission(array(2))) {
   openPage("nothing here");
-  echo "You are not allowed to anything here.";
+  echo "You can only see and update the assignments for your courses.";
+  assignmentManagement(2);
 }
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
@@ -73,13 +75,22 @@ if ($loggedInUser->checkPermission(array(3))) {
        echo "<h2></h2>";
     break;
     case 'discardAssignment':
-       echo "<h2></h2>";
+      $sql = "SELECT `Name` FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
+      $result = mysqli_query($mysqli, $sql);
+      if(mysqli_num_rows($result)>0){
+        list($Name) = mysqli_fetch_row($result);
+        $sql = "DELETE FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>Assignment $Name deleted.</h2>";
+      } else {
+        echo "<h2>Invalid Assignment id, nothing deleted.</h2>";
+      }
     break;
     default:
     // nothing here
     break;
   }
-  assignmentManagement();
+  assignmentManagement(3);
 }
 
 closePage();

@@ -834,12 +834,36 @@ function listTeams($id) {
 
   }
 
-  function assignmentManagement(){
-    global $mysqli;
+  function assignmentManagement($userLevel){
+    global $mysqli, $loggedInUser;
 
-    $result1 = mysqli_query($mysqli, "SELECT CourseId, CourseName, CourseYear, CourseSemester, ProgramName, CampusName".
+    switch ($userLevel) {
+      case 1:
+      // Nothing here yet
+        $sql = "SELECT CourseId, CourseName, CourseYear, CourseSemester, ProgramName, CampusName".
+                " FROM Course C, Campus S, Program P ".
+                " WHERE 0;";
+      break;
+
+      case 2:
+      $sql = "SELECT C.CourseId, C.CourseName, C.CourseYear, C.CourseSemester, ProgramName, CampusName".
+            " FROM Course C, Campus S, Program P ,course_x_professor X".
+            " WHERE CourseProgramId = P.ProgramId  AND ProgramCampusId = CampusId AND C.CourseId = X.CourseId AND X.ProfessorId = '".$loggedInUser->user_id."' ".
+            "ORDER BY CampusName, ProgramName, CourseYear, CourseName ;";
+
+      break;
+
+      case 3:
+        $sql = "SELECT CourseId, CourseName, CourseYear, CourseSemester, ProgramName, CampusName".
               " FROM Course C, Campus S, Program P ".
-              " WHERE CourseProgramId = ProgramId  AND ProgramCampusId = CampusId ORDER BY CampusName, ProgramName, CourseYear, CourseName ;");
+              " WHERE CourseProgramId = ProgramId  AND ProgramCampusId = CampusId ORDER BY CampusName, ProgramName, CourseYear, CourseName ;";
+      break;
+
+      default:
+        // code...
+        break;
+    }
+    $result1 = mysqli_query($mysqli, $sql);
     $lastJobId = 0;
 
     while (list($CourseId, $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName) = mysqli_fetch_row($result1)){
@@ -847,9 +871,13 @@ function listTeams($id) {
       echo "<h2>$CourseId $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName </h2>";
 
       $result2 = mysqli_query($mysqli, "SELECT id, Name, weight, sortOrder FROM Job WHERE CourseId = '$CourseId' ORDER BY sortOrder");
-      echo "<ul>";
+      echo '<ul class="course-list">';
       while (list($JobId, $JobName, $JobWeigh, $JobSortOrder) = mysqli_fetch_row($result2)) {
-        echo "<li>$JobName, $JobWeigh, $JobSortOrder</li>";
+        echo '<li><form method="post">
+        <input type="hidden" name="AssignmentId" value="'.$JobId.'">
+        <button type="submit" name="cmd" value="discardAssignment">delete</button>
+        <button type="submit" name="cmd" value="updateAssignment">update</button>
+        </form>'.$JobName.' ('.$JobWeigh.') ('.$JobSortOrder.')</li>';
       }
       echo "</ul>";
 
