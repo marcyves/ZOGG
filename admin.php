@@ -57,7 +57,6 @@ if ($loggedInUser->checkPermission(array(3))) {
 
   openPage("Administration");
 
-  print_r($_POST);
   if (isset($_POST['cmd'])) {
     $cmd = $_POST['cmd'];
   } else {
@@ -93,27 +92,36 @@ if ($loggedInUser->checkPermission(array(3))) {
     echo "<h2></h2>";
     break;
     case 'updateCourse':
-    echo "<h2></h2>";
+      $sql = "SELECT `CourseName` FROM `Course` WHERE CourseId =  '".$_POST['CourseId']."'";
+      $result = mysqli_query($mysqli, $sql);
+      if(mysqli_num_rows($result) == 1){
+        list($CourseName) = mysqli_fetch_row($result);
+        $sql = "UPDATE `Course` SET CourseName = '".$_POST['CourseName']."' , CourseYear = '".$_POST['CourseYear']."' , CourseSemester = '".$_POST['CourseSemester']."' WHERE CourseId =  '".$_POST['CourseId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>CourseId $CourseName updated.</h2>";
+      } else {
+        echo "<h2>Invalid CourseId, nothing to update.</h2>";
+      }
     break;
     case 'updateProgram':
     echo "<h2></h2>";
     break;
     case 'discardCampus':
-    $sql = "SELECT `CampusName` FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
-    $result = mysqli_query($mysqli, $sql);
-    if(mysqli_num_rows($result)>0){
-      list($CampusName) = mysqli_fetch_row($result);
-      $sql = "DELETE FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
+      $sql = "SELECT `CampusName` FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
       $result = mysqli_query($mysqli, $sql);
-      echo "<h2>Campus $CampusName deleted.</h2>";
-    } else {
-      echo "<h2>Invalid Campus id, nothing deleted.</h2>";
-    }
+      if(mysqli_num_rows($result) == 1){
+        list($CampusName) = mysqli_fetch_row($result);
+        $sql = "DELETE FROM `Campus` WHERE CampusId =  '".$_POST['CampusId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>Campus $CampusName deleted.</h2>";
+      } else {
+        echo "<h2>Invalid Campus id, nothing deleted.</h2>";
+      }
     break;
     case 'discardProgram':
       $sql = "SELECT `ProgramName` FROM `Program` WHERE ProgramId =  '".$_POST['ProgramId']."'";
       $result = mysqli_query($mysqli, $sql);
-      if(mysqli_num_rows($result)>0){
+      if(mysqli_num_rows($result) == 1){
         list($ProgramName) = mysqli_fetch_row($result);
         $sql = "DELETE FROM `Program` WHERE ProgramId =  '".$_POST['ProgramId']."'";
         $result = mysqli_query($mysqli, $sql);
@@ -125,7 +133,7 @@ if ($loggedInUser->checkPermission(array(3))) {
     case 'discardCourse':
       $sql = "SELECT `CourseName` FROM `Course` WHERE CourseId =  '".$_POST['CourseId']."'";
       $result = mysqli_query($mysqli, $sql);
-      if(mysqli_num_rows($result)>0){
+      if(mysqli_num_rows($result) == 1){
         list($CourseName) = mysqli_fetch_row($result);
         $sql = "DELETE FROM `Course` WHERE CourseId =  '".$_POST['CourseId']."'";
         $result = mysqli_query($mysqli, $sql);

@@ -59,37 +59,6 @@ if ($loggedInUser->checkPermission(array(3))) {
 
   openPage("Assignments Administration");
 
-  print_r($_POST);
-  if (isset($_POST['cmd'])) {
-    $cmd = $_POST['cmd'];
-  } else {
-    $cmd = "";
-  }
-  switch ($cmd) {
-    case 'newAssignment':
-      $sql = "INSERT  INTO Job  (Name, weight, CourseId, sortOrder) VALUES ('".$_POST['AssignmentName']."', '".$_POST['AssignmentWeight']."', '".$_POST['CourseId']."', '".$_POST['AssignmentSortOrder']."')";
-      $result = mysqli_query($mysqli, $sql);
-      echo "<h2>Job ".$_POST['AssignmentName']." created</h2>";
-    break;
-    case 'updateAssignment':
-       echo "<h2></h2>";
-    break;
-    case 'discardAssignment':
-      $sql = "SELECT `Name` FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
-      $result = mysqli_query($mysqli, $sql);
-      if(mysqli_num_rows($result)>0){
-        list($Name) = mysqli_fetch_row($result);
-        $sql = "DELETE FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
-        $result = mysqli_query($mysqli, $sql);
-        echo "<h2>Assignment $Name deleted.</h2>";
-      } else {
-        echo "<h2>Invalid Assignment id, nothing deleted.</h2>";
-      }
-    break;
-    default:
-    // nothing here
-    break;
-  }
   assignmentManagement(3);
 }
 

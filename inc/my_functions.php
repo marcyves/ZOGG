@@ -703,8 +703,6 @@ function listTeams($id) {
   function displayCurrentGroup(){
     global $mysqli, $my_group;
 
-    // print_r($_POST);
-
     if (isset($_POST['CampusId'])) {
       $my_group->setCampus($_POST['CampusId']);
     }
@@ -780,8 +778,9 @@ function listTeams($id) {
               echo '<li><form method="post">
               <input type="hidden" name="CourseId" value="'.$id.'">
               <button type="submit" name="cmd" value="discardCourse">delete</button>
-              <button type="submit" name="cmd" value="updateCourse">update</button>
-              </form>'.$name.' ('.$year.', '.$semester.')</li>';
+              <button type="submit" name="cmd" value="updateCourse">update</button>'.
+              '<input type="text" name="CourseName" size="30" value="'.$name.'"> (<input type="text" name="CourseYear" size="4" value="'.$year.'">, <input type="text" name="CourseSemester" size="5" value="'.$semester.'">)<br>
+              </form></li>';
             }
             echo '</ul>';
 
@@ -837,6 +836,46 @@ function listTeams($id) {
   function assignmentManagement($userLevel){
     global $mysqli, $loggedInUser;
 
+    if (isset($_POST['cmd'])) {
+      $cmd = $_POST['cmd'];
+    } else {
+      $cmd = "";
+    }
+    switch ($cmd) {
+      case 'newAssignment':
+        $sql = "INSERT  INTO Job  (Name, weight, CourseId, sortOrder) VALUES ('".$_POST['AssignmentName']."', '".$_POST['AssignmentWeight']."', '".$_POST['CourseId']."', '".$_POST['AssignmentSortOrder']."')";
+        $result = mysqli_query($mysqli, $sql);
+        echo "<h2>Job ".$_POST['AssignmentName']." created</h2>";
+      break;
+      case 'updateAssignment':
+        $sql = "SELECT `Name` FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        if(mysqli_num_rows($result) == 1){
+          list($Name) = mysqli_fetch_row($result);
+          $sql = "UPDATE `Job` SET Name = '".$_POST['AssignmentName']."' ,weight = ".$_POST['AssignmentWeight'].", sortOrder = ".$_POST['AssignmentSortOrder']." WHERE id =  '".$_POST['AssignmentId']."'";
+          $result = mysqli_query($mysqli, $sql);
+          echo "<h2>Assignment $Name updated.</h2>";
+        } else {
+          echo "<h2>Invalid Assignment id, nothing to modify.</h2>";
+        }
+      break;
+      case 'discardAssignment':
+        $sql = "SELECT `Name` FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
+        $result = mysqli_query($mysqli, $sql);
+        if(mysqli_num_rows($result) == 1){
+          list($Name) = mysqli_fetch_row($result);
+          $sql = "DELETE FROM `Job` WHERE id =  '".$_POST['AssignmentId']."'";
+          $result = mysqli_query($mysqli, $sql);
+          echo "<h2>Assignment $Name deleted.</h2>";
+        } else {
+          echo "<h2>Invalid Assignment id, nothing deleted.</h2>";
+        }
+      break;
+      default:
+      // nothing here
+      break;
+    }
+
     switch ($userLevel) {
       case 1:
       // Nothing here yet
@@ -866,9 +905,21 @@ function listTeams($id) {
     $result1 = mysqli_query($mysqli, $sql);
     $lastJobId = 0;
 
+    $previousCampusName = "";
+    $previousProgramName = "";
+    $flagTitle = FALSE;
+
     while (list($CourseId, $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName) = mysqli_fetch_row($result1)){
-      echo '<div class="school-details">';
-      echo "<h2>$CourseId $CourseName, $CourseYear, $CourseSemester, $ProgramName, $CampusName </h2>";
+      if($ProgramName != $previousProgramName) {
+        if ($flagTitle){
+          echo '</div>';
+        }
+        echo '<div class="school-details">';
+        echo "<h2>$CampusName > $ProgramName </h2>";
+        $previousProgramName = $ProgramName;
+        $flagTitle = TRUE;
+      }
+      echo "<h2>$CourseName ($CourseYear, $CourseSemester)</h2>";
 
       $result2 = mysqli_query($mysqli, "SELECT id, Name, weight, sortOrder FROM Job WHERE CourseId = '$CourseId' ORDER BY sortOrder");
       echo '<ul class="course-list">';
@@ -876,8 +927,11 @@ function listTeams($id) {
         echo '<li><form method="post">
         <input type="hidden" name="AssignmentId" value="'.$JobId.'">
         <button type="submit" name="cmd" value="discardAssignment">delete</button>
-        <button type="submit" name="cmd" value="updateAssignment">update</button>
-        </form>'.$JobName.' ('.$JobWeigh.') ('.$JobSortOrder.')</li>';
+        <button type="submit" name="cmd" value="updateAssignment">update</button>'.
+        '<input type="text" name="AssignmentName" value="'.$JobName.'" size="30"> ('.
+        '<input type="text" name="AssignmentWeight" value="'.$JobWeigh.'" size="8">) Order : '.
+        '<input type="text" name="AssignmentSortOrder" value="'.$JobSortOrder.'" size="3"><br>
+        </form></li>';
       }
       echo "</ul>";
 
@@ -892,8 +946,8 @@ function listTeams($id) {
       <input type="submit" value="Create New Assignment">
       </form>';
       echo '</div>';
-      echo '</div>';
     }
+    echo '</div>';
   }
 
   ?>
