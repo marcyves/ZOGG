@@ -209,8 +209,10 @@ function listTeamsForBuilding($td, $job, $course) {
   Allows to create new teams.
 
 */
-    echo '<div class="container">';
-    echo '<div class="col-sm-3">';
+//    echo '<div class="container">';
+echo '<div class="container-fluid">
+    <div class="row">';
+    echo '<div class="col-xl">';
     echo "<form method='GET'>
     <input type='text'   name='teamName'  value='?'>
     <input type='hidden' name='step'   value='grading'>
@@ -238,7 +240,7 @@ function listTeamsForBuilding($td, $job, $course) {
 //  echo '<div class="row">';
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<div class="col-sm-3">';
+    echo '<div class="col-xl">';
     echo '<h5>' . $row['TeamName'];
     echo '</h5>';
     if ($row['Grade'] != '') {
@@ -264,7 +266,7 @@ function listTeamsForBuilding($td, $job, $course) {
 //  echo "</div>";
 
   displayFreeStudentsForEnroll( $td, $job, $course);
-  echo "</div>";
+  echo "</div></div>";
   mysqli_free_result($result);
 }
 
@@ -322,7 +324,7 @@ function displayFreeStudentsForEnroll($groupId, $jobId, $course) {
   $result = mysqli_query($mysqli, $sql);
 
   if (mysqli_num_rows($result)>0) {
-    echo '<div class="col-sm-3">';
+    echo '<div class="col-xl">';
     echo "<h2>Students in this group without a team</h2>";
 
     while (($student = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
@@ -523,7 +525,7 @@ function listTeams($id) {
 
     $rowCourse = $my_group->getCurrentCourseDetails();
 
-    echo '<table border=1>';
+    echo '<table class="table">';
     echo '<tr>';
     echo '<th>Nom</th>';
     echo '<th>Prénom</th>';
@@ -597,7 +599,7 @@ function listTeams($id) {
     while (($rowCourse = mysqli_fetch_array($rcCourse, MYSQLI_ASSOC)) != NULL) {
       echo "<h2>Course: ".$rowCourse['CourseName']."</h2>";
       //Now display result table for students in this course
-      echo '<table border=1>';
+      echo '<table class="table">';
       echo '<tr>';
       echo '<th>Nom</th>';
       echo '<th>Prénom</th>';
@@ -777,8 +779,8 @@ function listTeams($id) {
             while (list($id, $name, $year, $semester) = mysqli_fetch_row($result3)){
               echo '<li><form method="post">
               <input type="hidden" name="CourseId" value="'.$id.'">
-              <button type="submit" name="cmd" value="discardCourse">delete</button>
-              <button type="submit" name="cmd" value="updateCourse">update</button>'.
+              <button type="submit" name="cmd" value="discardCourse" class="btn btn-danger btn-xs">delete</button>
+              <button type="submit" name="cmd" value="updateCourse" class="btn btn-warning btn-xs">update</button>'.
               '<input type="text" name="CourseName" size="30" value="'.$name.'"> (<input type="text" name="CourseYear" size="4" value="'.$year.'">, <input type="text" name="CourseSemester" size="5" value="'.$semester.'">)<br>
               </form></li>';
             }
@@ -926,8 +928,8 @@ function listTeams($id) {
       while (list($JobId, $JobName, $JobWeigh, $JobSortOrder) = mysqli_fetch_row($result2)) {
         echo '<li><form method="post">
         <input type="hidden" name="AssignmentId" value="'.$JobId.'">
-        <button type="submit" name="cmd" value="discardAssignment">delete</button>
-        <button type="submit" name="cmd" value="updateAssignment">update</button>'.
+        <button type="submit" name="cmd" value="discardAssignment" class="btn btn-danger btn-xs">delete</button>
+        <button type="submit" name="cmd" value="updateAssignment" class="btn btn-warning btn-xs">update</button>'.
         '<input type="text" name="AssignmentName" value="'.$JobName.'" size="30"> ('.
         '<input type="text" name="AssignmentWeight" value="'.$JobWeigh.'" size="8">) Order : '.
         '<input type="text" name="AssignmentSortOrder" value="'.$JobSortOrder.'" size="3"><br>

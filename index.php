@@ -111,26 +111,23 @@ if(!empty($_POST))
 
 require_once("inc/my_functions.php");
 
-openPage("Group Grading Made Easy");
-
-title("home","Merci de vous connecter");
+openPage("Welcome to ZOGG	");
 
 echo resultBlock($errors,$successes);
 
-echo "
-<form name='login' action='".$_SERVER['PHP_SELF']."' method='post'>
-<div class='form_settings'>
-<span>Username:</span>
-<input type='text' name='username' />
-</p>
-<p>
-<span>Password:</span>
-<input type='password' name='password' />
-<p style='padding-top: 15px'>
-<input type='submit' value='Login' class='submit' />
-</div>
-</form>
-</div>";
+echo '<form class="form-signin" method="post">
+      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <label for="inputName" class="sr-only">User Name</label>
+			<input type="text"  id="inputName" class="form-control" name="username" placeholder="Username" required autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required>
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>';
 
 closePage();
 
