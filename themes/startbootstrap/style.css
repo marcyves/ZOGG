@@ -1,0 +1,167 @@
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: rgba(153, 206, 236, 0.6);
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 40px;
+  line-height: 40px; /* Vertically center the text there */
+  background-color: rgba(106, 143, 246, 0.48);
+}
+
+/*
+    Document   : six
+    Created on : 4 sept. 2013, 13:21:11
+    Author     : marc
+    Description:
+        Purpose of the stylesheet follows.
+*/
+.col-xl{
+  padding: 8px;
+  margin: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: rgba(141, 237, 244, 0.2);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 12px 12px rgba(0, 0, 0, .15);
+}
+
+.course-list form{
+  display: inline;
+}
+.course-list ul{
+  background: rgba(238, 150, 1, 0.81);
+  padding: 20px;
+}
+.course-list li{
+  background: rgba(249, 188, 86, 0.58);
+  margin: 5px;
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+.student-item {
+  text-align: left;
+  padding-left: 6px;
+  padding-top: 2px;
+  color:rgba(10, 68, 217, 1);
+}
+
+.school-details {
+  margin: 0px 0px 16px 0px;
+	/* text-align: center; */
+	background-color: rgba(254, 168, 23, 0.58);
+	color: rgb(189, 15, 217);
+	padding: 0px 20px 8px 8px;
+	border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 20px 20px rgba(0, 0, 0, .15);
+}
+
+.school-details ul {
+  padding: 0px 0px 8px 8px;
+}
+
+.school-details h2, h3 {
+  margin: 8px 0 8px 0;
+}
+
+.program-details {
+  margin: 0px 0px 0px 0px;
+	background-color: rgba(210, 224, 181, 0.58);
+	padding: 0px 8px 8px 8px;
+	border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
+              0 3px 5px rgba(0, 0, 0, .2),
+              0 5px 10px rgba(0, 0, 0, .2),
+              0 20px 20px rgba(0, 0, 0, .15);
+}
+
+.grading {
+  float: left;
+  display: block;
+  margin: 0px 0px 15px 0px;
+  background-color: rgba(231, 220, 160, 0.5);
+  border-radius: 8px;
+  width: 600px;
+  height: 4em;
+}
+
+.grading label{
+    display: block;
+    margin: 0px 0px 15px 0px;
+}
+.grading label > span{
+    width: 30%;
+    float: left;
+    padding-top: 8px;
+    padding-left: 12px;
+}
+
+.grading input[type="text"],
+.grading select,
+.grading textarea {
+    padding: 0.5em 0.6em;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px #ddd;
+    border-radius: 4px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+.grading input[type="text"]:focus,
+.grading select:focus,
+.grading textarea:focus {
+    outline: 0;
+    border-color: #129FEA;
+}
