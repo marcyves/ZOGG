@@ -53,7 +53,6 @@ if (isset($loggedInUser)) {
      /*
      * Le code commence ici
      */
-
      openPage("Building");
 
      if ($my_group->getStatus()){

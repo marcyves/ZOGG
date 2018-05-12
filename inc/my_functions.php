@@ -673,35 +673,6 @@ function listTeams($id) {
     mysqli_free_result($rcCourse);
   }
 
-  function buildSelect($label,$name, $col1, $col2, $sql) {
-    global $mysqli;
-
-    $tmp = "<form method='post'>$label : <select name='$col1'>";
-
-    $rc = mysqli_query($mysqli, $sql);
-    while (($row = mysqli_fetch_array($rc, MYSQLI_ASSOC)) != NULL) {
-      if ($row[$col2] == $name) {
-        $sel = "selected";
-      } else {
-        $sel = "";
-      }
-      // Hugly
-      if (isset($row['CourseYear'])){
-        $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."(".$row['CourseYear'].")</option>";
-      } else {
-        $tmp .= "<option value='".$row[$col1]."' $sel>".$row[$col2]."</option>";
-      }
-    }
-    $tmp .= "</select>";
-    if ($name != 'admin_init'){
-      $tmp .= "<input type='submit' value='Change'>";
-    }
-    $tmp .= "</form>";
-
-    mysqli_free_result($rc);
-    return $tmp;
-  }
-
   function displayCurrentGroup(){
     global $mysqli, $my_group;
 
