@@ -35,6 +35,8 @@ if(!isUserLoggedIn()) { header("Location: index.php"); die(); }
 
 require_once("inc/functions.php");
 require_once("themes/$theme/theme.php");
+require_once("inc/classes.php");
+require_once("inc/my_functions.php");
 
 /* Debug
 echo "<h1>user</h1>";
@@ -54,9 +56,9 @@ if(!empty($_POST))
 
 	$errors = array();
 	$email = $_POST["email"];
-	
+
 	//Perform some validation
-	
+
 	if($email != $loggedInUser->email)
 	{
 		if(trim($email) == "")
@@ -69,9 +71,9 @@ if(!empty($_POST))
 		}
 		else if(emailExists($email))
 		{
-			$errors[] = lang("ACCOUNT_EMAIL_IN_USE", array($email));	
+			$errors[] = lang("ACCOUNT_EMAIL_IN_USE", array($email));
 		}
-		
+
 		//End data validation
 		if(count($errors) == 0)
 		{
@@ -82,7 +84,7 @@ if(!empty($_POST))
 
 	if($title != $loggedInUser->title)
 	{
-		$title = trim($title);		
+		$title = trim($title);
 		//Validate title
 		if(minMaxRange(1,50,$title))
 		{
@@ -99,7 +101,7 @@ if(!empty($_POST))
 		}
 	}
 
-// campus can only be set one time 
+// campus can only be set one time
 	if($campus = $_POST["campus"])
 	{
 		if($campus != $loggedInUser->campus)
@@ -108,8 +110,8 @@ if(!empty($_POST))
 			$successes[] = lang("ACCOUNT_CAMPUS_UPDATED", array ($loggedInUser->displayname, getCampusById($campus)));
 		}
 	}
-	
-// team can only be set one time 
+
+// team can only be set one time
 	if($team = $_POST["team"])
 	{
 		if($team != $loggedInUser->team)
@@ -118,8 +120,8 @@ if(!empty($_POST))
 			$successes[] = lang("ACCOUNT_TEAM_UPDATED", array ($loggedInUser->displayname, getTeamById($team)));
 		}
 	}
-	
-// group can only be set one time 
+
+// group can only be set one time
 	if($group = $_POST["group"])
 	{
 		if($team != $loggedInUser->group)
@@ -128,8 +130,8 @@ if(!empty($_POST))
 			$successes[] = lang("ACCOUNT_GROUP_UPDATED", array ($loggedInUser->displayname, $group));
 		}
 	}
-	
-// role can only be set one time 
+
+// role can only be set one time
 	if($role = $_POST["role"])
 	{
 		if($role != $loggedInUser->role)
@@ -149,11 +151,11 @@ if(!empty($_POST))
 				{
 					$loggedInUser->updateRole($role);
 					$successes[] = lang("ACCOUNT_ROLE_UPDATED", array ($loggedInUser->displayname, getRoleById($role)));
-			
+
 					if ($role == 6)  // Banker
 					{
 						//We now have to initialise bank account with starting value.
-						initUserBankAccount($loggedInUser->user_id);					
+						initUserBankAccount($loggedInUser->user_id);
 						$successes[] = lang("ACCOUNT_BANK_INIT", array ($loggedInUser->displayname));
 					}
 				}
@@ -210,7 +212,7 @@ if ($roleId == NULL)
 
 	echo "
 	</select>";
-} 
+}
 else
 {
 	echo "<input type='text' name='roleOk' value='".getRoleById($roleId)."' readonly>";
@@ -227,7 +229,7 @@ if ($campusId == NULL)
 {
 	$campusId0 = 0;
 	$campusName0 = "--> Please Select";
-	
+
 	echo "<select name='campus' />
 	<option style='color:purple;' value='$campusId0' selected>$campusName0</option>";
 
@@ -242,7 +244,7 @@ if ($campusId == NULL)
 
 	echo "
 	</select>";
-} 
+}
 else
 {
 	echo "<input type='text' name='campusOk' value='".getCampusById($campusId)."' readonly>";
@@ -267,7 +269,7 @@ if ($groupId == NULL)
 	}
 	echo "
 	</select>";
-} 
+}
 else
 {
 	echo "<input type='text' name='groupOk' value='$groupId' readonly>";
@@ -293,7 +295,7 @@ if ($teamId == NULL)
 	}
 	echo "
 	</select>";
-} 
+}
 else
 {
 	echo "<input type='text' name='teamOk' value='".getTeamById($teamId)."' readonly>";
