@@ -125,13 +125,12 @@ function listStudentsByTeam($teamId, $td, $job, $course) {
   $result = mysqli_query($mysqli, 'SELECT Student.ID, Prenom, NOM  FROM `Student` , StudentTeam WHERE Student.ID = idStudent AND idTeam = \''.$teamId.'\' ORDER BY StudentGroupId');
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<div class="student-item">';
+    echo '<li class="list-group-item text-success">';
     echo '<a href="building.php?sub=remove&team='.$teamId.'&student=' . $row['ID'] . '&groupId='.$td.'&job='.$job.'&course='.$course.'">';
-    echo '<img src="themes/default/images/delete.png"></a>';
+    echo '<i class="fas fa-trash-alt"></i>&nbsp;</a>';
     echo ucfirst(strtolower($row['Prenom'])) . " ";
     echo ucfirst(strtolower($row['NOM'])) . ' ';
-//    echo '<span class="delete">&nbsp;</span>';
-    echo '</div>';
+    echo '</li>';
   }
   mysqli_free_result($result);
 }
@@ -209,28 +208,32 @@ function listTeamsForBuilding($td, $job, $course) {
   Allows to create new teams.
 
 */
-//    echo '<div class="container">';
-echo '<div class="container-fluid">
+echo '<div class="container-fluid mb-3">
     <div class="row">';
-    echo '<div class="col-xl">';
-    echo "<form method='GET'>
-    <input type='text'   name='teamName'  value='?'>
-    <input type='hidden' name='step'   value='grading'>
-    <input type='hidden' name='sub'   value='create'>
-    <input type='hidden' name='groupId'     value='$td'>
-    <input type='hidden' name='course' value='$course'>
-    <input type='hidden' name='job'    value='$job'>
-    <input class='button' type='submit'               value='Create new team'>
-    </form>";
-    echo "<form method='GET'>
-    <input type='hidden' name='step'   value='grading'>
-    <input type='hidden' name='sub'   value='solo'>
-    <input type='hidden' name='groupId'     value='$td'>
-    <input type='hidden' name='course' value='$course'>
-    <input type='hidden' name='job'    value='$job'>
-    <input class='button' type='submit'               value='Create solo'>
-    </form>";
-    echo '</div>';
+
+echo '<div class="card text-white bg-primary mb-3" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">Team creation</h5>
+    <p class="card-text">.</p>';
+echo "<form method='GET'>
+<input type='text'   name='teamName'  value='?'>
+<input type='hidden' name='step'   value='grading'>
+<input type='hidden' name='sub'   value='create'>
+<input type='hidden' name='groupId'     value='$td'>
+<input type='hidden' name='course' value='$course'>
+<input type='hidden' name='job'    value='$job'>
+<input class='btn btn-secondary btn-sm' type='submit'               value='Create new team'>
+</form>";
+echo "<form method='GET'>
+<input type='hidden' name='step'   value='grading'>
+<input type='hidden' name='sub'   value='solo'>
+<input type='hidden' name='groupId'     value='$td'>
+<input type='hidden' name='course' value='$course'>
+<input type='hidden' name='job'    value='$job'>
+<input class='btn btn-secondary btn-sm' type='submit'               value='Create solo'>
+</form>";
+echo '</div>
+</div>';
 
   $sql = 'SELECT DISTINCT Team.ID, `Team`.`TeamName`, `Team`.`Grade`, `Team`.`Comment`, `Team`.`JobId` FROM `Team`
   WHERE JobId = \''.$job.'\' AND groupId ='.$td.' ORDER BY TeamName';
@@ -240,30 +243,29 @@ echo '<div class="container-fluid">
 //  echo '<div class="row">';
 
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-    echo '<div class="col-xl">';
-    echo '<h5>' . $row['TeamName'];
-    echo '</h5>';
-    if ($row['Grade'] != '') {
-      echo '  Grade: ' . $row['Grade'];
-    } else {
-      echo "<p>
-      <form method='GET'>
-      <input type='hidden' name='step'    value='building'>
-      <input type='hidden' name='sub'    value='discard'>
-      <input type='hidden' name='groupId' value='$td'>
-      <input type='hidden' name='course'  value='$course'>
-      <input type='hidden' name='job'     value='$job'>
-      <input type='hidden' name='teamId'  value='".$row['ID']."'>
-      <input class='button' type='submit' value='Discard'>
-      </form></p>";
-    }
-
-    listFreeStudentsForEnroll($row['ID'], $td, $job, $course);
-    listStudentsByTeam($row['ID'], $td, $job, $course);
-
-    echo "</div>";
+    echo '<div class="card text-white bg-secondary mb-3" style="width: 18rem;">
+    <h5 class="card-title">Team: '. $row['TeamName'].'</h5>
+  <div class="card-header">';
+  if ($row['Grade'] != '') {
+    echo '  Grade: ' . $row['Grade'];
+  } else {
+    echo "<form method='GET'>
+    <input type='hidden' name='step'    value='building'>
+    <input type='hidden' name='sub'    value='discard'>
+    <input type='hidden' name='groupId' value='$td'>
+    <input type='hidden' name='course'  value='$course'>
+    <input type='hidden' name='job'     value='$job'>
+    <input type='hidden' name='teamId'  value='".$row['ID']."'>
+    <input class='btn btn-secondary btn-sm' type='submit' value='Discard'>
+    </form>";
   }
-//  echo "</div>";
+  echo '</div>
+  <ul class="list-group list-group-flush">';
+  listFreeStudentsForEnroll($row['ID'], $td, $job, $course);
+  listStudentsByTeam($row['ID'], $td, $job, $course);
+  echo '</ul>
+</div>';
+  }
 
   displayFreeStudentsForEnroll( $td, $job, $course);
   echo "</div></div>";
@@ -324,15 +326,19 @@ function displayFreeStudentsForEnroll($groupId, $jobId, $course) {
   $result = mysqli_query($mysqli, $sql);
 
   if (mysqli_num_rows($result)>0) {
-    echo '<div class="col-xl">';
-    echo "<h2>Students in this group without a team</h2>";
 
+    echo '<div class="card border-danger mb-3" style="width: 18rem;">
+  <div class="card-header text-danger">Standalone students</div>
+  <div class="card-body text-danger">
+    <ul class="list-group list-group-flush">';
     while (($student = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
-      echo '<div class="student-item">';
+      echo '<li class="list-group-item">';
       echo $student['NOM']." ".$student['Prenom'];
-      echo "</div>";
+      echo "</li>";
     }
-    echo "</div>";
+    echo '</ul>
+  </div>
+</div>';
   }
 }
 
@@ -346,7 +352,8 @@ function listFreeStudentsForEnroll($teamId, $TD, $jobId, $course) {
   $result = mysqli_query($mysqli, $sql);
 
   if (mysqli_num_rows($result) > 0) {
-      echo "<form method='GET'>
+      echo "<li class='list-group-item'>
+      <form method='GET'>
       <input type='hidden' name='cmd' value='building'>
       <input type='hidden' name='teamId' value='$teamId'>
       <input type='hidden' name='groupId' value='$TD'>
@@ -358,8 +365,9 @@ function listFreeStudentsForEnroll($teamId, $TD, $jobId, $course) {
         echo "<option value='".$student['ID']."' >".$student['NOM']." ".$student['Prenom']."</option>";
       }
       echo "</select>
-      <input class='button' type='submit' value='enroll'>
-      </form>";
+      <input class='btn btn-primary btn-sm' type='submit' value='enroll'>
+      </form>
+      </li>";
   }
 
 }
@@ -435,11 +443,13 @@ function listTeams($id) {
 
     $rowCourse = $my_group->getCurrentCourseDetails();
 
-    echo '<table border=1>';
+    echo '<table class="table">';
     echo '<tr>';
     echo '<th>Nom</th>';
     echo '<th>Prénom</th>';
-    $result = mysqli_query($mysqli, 'SELECT id, Name, weight FROM Job ORDER BY sortOrder');
+    $sql = 'SELECT DISTINCT J.id, J.Name, J.weight FROM Job J WHERE J.CourseId = '.$rowCourse['CourseId'].' ORDER BY sortOrder';
+
+    $result = mysqli_query($mysqli, $sql);
     $lastJobId = 0;
     while (list($id, $name, $weight) = mysqli_fetch_row($result)){
       echo '<th>'.$name.' ('.$weight.')</th>';
@@ -505,7 +515,7 @@ function listTeams($id) {
           <option></option>
           </select>
           </form>
-          <input type='submit' value='Move'>
+          <input type='submit' class='btn btn-primary btn-sm' value='Move'>
           </td>";
           $tmpLine .= '<td><a href="?cmd=discard&studentId='.$currentStudentId.'&groupId='.$rowCourse['GroupId'].'">Discard</a></td>';
         }

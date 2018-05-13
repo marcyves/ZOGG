@@ -58,21 +58,10 @@ html {
     Description:
         Purpose of the stylesheet follows.
 */
-.col-xl{
-  padding: 8px;
-  margin: 10px;
-  vertical-align: middle;
-  cursor: pointer;
-  background-color: rgba(141, 237, 244, 0.2);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .3),
-              0 3px 5px rgba(0, 0, 0, .2),
-              0 5px 10px rgba(0, 0, 0, .2),
-              0 12px 12px rgba(0, 0, 0, .15);
+.card {
+  margin-left: 10px;
+  margin-right: 10px;
 }
-
 .course-list form{
   display: inline;
 }
@@ -85,13 +74,6 @@ html {
   margin: 5px;
   list-style-type: none;
   list-style-position: inside;
-}
-
-.student-item {
-  text-align: left;
-  padding-left: 6px;
-  padding-top: 2px;
-  color:rgba(10, 68, 217, 1);
 }
 
 .school-details {

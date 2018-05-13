@@ -45,7 +45,7 @@ function toolBarLink($url, $label, $icon){
       fa-angle-left
       fa-sign-out
 */
-  echo '<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+  echo '<li class="nav-item" data-toggle="tooltip" data-placement="right" title="'.$label.'">
                 <a class="nav-link" href="'.$url.'">
                   <i class="fa fa-fw '.$icon.'"></i>
                   <span class="nav-link-text">'.$label.'</span>
@@ -73,7 +73,9 @@ echo '<!DOCTYPE html>
   <!-- Bootstrap core CSS-->
   <link href="themes/startbootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
-  <link href="themes/startbootstrap/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-solid.css" >
+  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-regular.css">
+  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fontawesome.css">
   <!-- Custom styles for this template-->
   <link href="themes/startbootstrap/css/sb-admin.css" rel="stylesheet">'.
   "<link rel='stylesheet' href='themes/startbootstrap/style.css'>".
@@ -158,6 +160,30 @@ echo '<!DOCTYPE html>
       </ul>
     </div>
   </nav>';
+
+
+
+    // Display error or success messages
+    if (!empty($successes)) {
+        echo "<h4 style='color: blue;'>" . $successes[0] . "</h4>";
+    }
+    if (!empty($errors)) {
+        echo "<h4 style='color: red;'>" . $errors[0] . "</h4>";
+    }
+    echo '<div class="content-wrapper">
+        <div class="container-fluid">
+          <!-- Breadcrumbs-->
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="index.php">ZOGG</a>
+            </li>
+            <li class="breadcrumb-item active">Blank Page</li>
+          </ol>';
+          if ($loggedInUser->checkPermission(array(2)))
+          {
+            echo displayCurrentGroup();
+          }
+
 } else {
 //Links for users not logged in
 
@@ -189,19 +215,7 @@ echo '  <!-- Navigation-->
       echo "<h4 style='color: red;'>" . $errors[0] . "</h4>";
   }
   echo '<div class="content-wrapper">
-      <div class="container-fluid">
-        <!-- Breadcrumbs-->
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="index.php">ZOGG</a>
-          </li>
-          <li class="breadcrumb-item active">Blank Page</li>
-        </ol>';
-        if ($loggedInUser->checkPermission(array(2)))
-        {
-          echo displayCurrentGroup();
-        }
-
+      <div class="container-fluid">';
 
         echo '
         <div class="row">
