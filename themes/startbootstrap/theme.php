@@ -53,6 +53,30 @@ function toolBarLink($url, $label, $icon){
               </li>';
 }
 
+function PageHead($websiteName)
+{
+  echo '<!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>'.$websiteName.'</title>
+    <!-- Bootstrap core CSS-->
+    <link href="themes/startbootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-solid.css" >
+    <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-regular.css">
+    <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fontawesome.css">
+    <!-- Custom styles for this template-->
+    <link href="themes/startbootstrap/css/sb-admin.css" rel="stylesheet">'.
+    "<link rel='stylesheet' href='themes/startbootstrap/style.css'>".
+  '</head>';
+
+}
 
 function openPage($title)
 {
@@ -60,28 +84,8 @@ function openPage($title)
     global $errors;
     global $successes;
 
-echo '<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <title>'.$websiteName.'</title>
-  <!-- Bootstrap core CSS-->
-  <link href="themes/startbootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom fonts for this template-->
-  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-solid.css" >
-  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fa-regular.css">
-  <link rel="stylesheet" href="themes/startbootstrap/vendor/font-awesome/css/fontawesome.css">
-  <!-- Custom styles for this template-->
-  <link href="themes/startbootstrap/css/sb-admin.css" rel="stylesheet">'.
-  "<link rel='stylesheet' href='themes/startbootstrap/style.css'>".
-'</head>
-
-<body class="fixed-nav sticky-footer bg-dark" id="page-top">';
+    PageHead($websiteName);
+    echo '<body class="fixed-nav sticky-footer bg-dark" id="page-top">';
 
     if(isUserLoggedIn())
     {
@@ -228,13 +232,12 @@ echo '  <!-- Navigation-->
 
 function closePage()
 {
-    echo '</div>
-          </div>
-        </div>
-        <!-- /.container-fluid-->
-        <!-- /.content-wrapper-->';
+    echo '<!-- /.container-fluid-->
+        <!-- /.content-wrapper-->
+    </div>
+</div>';
 
-    echo '<footer class="sticky-footer">
+    echo '<footer class="footer bg-light">
       <div class="container">
         <div class="text-center">';
 
@@ -274,8 +277,38 @@ function closePage()
 </html>';
 }
 
-function sign_in(){
-  return '<div class="card card-login mx-auto mt-5">
+
+function OpenSignInPage($title){
+  global $websiteName, $websiteDescription, $template, $mysqli, $emailActivation, $loggedInUser, $INX_SIDE1, $INX_LINKS;
+  global $errors;
+  global $successes;
+
+  PageHead($websiteName);
+  echo '<body class="bg-secondary">
+  <!-- Begin page content -->
+    <main role="main" class="container">';
+
+  echo '<h1><img src="themes/default/images/examples.png" alt="examples" />'.
+              $title.'</h1>';
+
+	//Error block
+	if(count($errors) > 0)
+  	{
+      foreach($errors as $error)
+  		{
+        echo '<div class="alert alert-danger" role="alert">'.$error.'</div>';
+  		}
+  	}
+  //Success block
+  if(count($successes) > 0)
+  	{
+  		foreach($successes as $success)
+  		{
+        echo '<div class="alert alert-success" role="alert">'.$success.'</div>';
+  		}
+  	}
+
+  echo '<div class="card card-login mx-auto mt-5">
       <div class="card-header">Login</div>
       <div class="card-body">
         <form class="form-signin" method="post">
@@ -295,8 +328,13 @@ function sign_in(){
           </div>
           <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
         </form>
+        <div class="text-center">
+          <a class="d-block small mt-3" href="register.php">Register an Account</a>
+          <a class="d-block small" href="forgot-password.php">Forgot Password?</a>
+        </div>
       </div>
-    </div>';
+    </div>
+    </main>';
 }
 
 ?>

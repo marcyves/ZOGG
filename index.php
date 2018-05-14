@@ -110,9 +110,7 @@ if(!empty($_POST))
 
 require_once("inc/my_functions.php");
 
-openPage("Welcome to ZOGG	");
-echo resultBlock($errors,$successes);
-echo sign_in();
+OpenSignInPage("Welcome to ZOGG	");
 closePage();
 
 ?>
