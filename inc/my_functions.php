@@ -293,7 +293,8 @@ function listTeamsForGrading($td, $job, $course) {
   WHERE JobId = \''.$job.'\' AND groupId ='.$td.' ORDER BY TeamName';
   //DEBUG echo "<br>$sql<br>";
   $result = mysqli_query($mysqli, $sql);
-
+// Loop with multiple forms
+/*
   while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
     echo '<div class="grading">'.
     "<form method='GET'><label>
@@ -311,6 +312,24 @@ function listTeamsForGrading($td, $job, $course) {
     </form></label>".
     "</div>\n\n";
   }
+*/
+echo '<div class="grading">'.
+"<form method='POST'>";
+
+  while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) != NULL) {
+    echo '<label><span>'.$row['TeamName'].
+    "</span>
+    <input type='text' name='grade[".$row['ID']."]' size='4' value='".$row['Grade']."'>
+    <textarea name='comment[".$row['ID']."]'>".$row['Comment']."</textarea></label>";
+  }
+  echo "<input type='hidden' name='step'    value='grading'>
+      <input type='hidden' name='groupId' value='$td'>
+      <input type='hidden' name='course'  value='$course'>
+      <input type='hidden' name='job'     value='$job'>
+      <input class='btn btn-primary btn-sm' type='submit' value='Set'>
+      </form>".
+      "</div>\n\n";
+
 
   displayFreeStudentsForEnroll( $td, $job, $course);
   mysqli_free_result($result);

@@ -50,28 +50,34 @@ if (isset($loggedInUser)) {
       openPage("Grading");
 
       if ($my_group->getStatus()){
-        //DEBUG      print_r($_GET);
+        //DEBUG      print_r($_POST);
         /*
         GRADING
         Here we grade the teams
         */
 
         if (isset($_GET['groupId'])) {
-              if (isset($_GET['step'])) {
-                      echo "<h4>Grade updated to ".$_GET['grade']."</h4>";
-                      assignGradeToTeam($_GET['teamId'], $_GET['grade'], $_GET['comment']);
-                      listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
+              if (isset($_POST['step'])) {
+                //Third step : update grade
+                $grade = $_POST['grade'];
+                $comment = $_POST['comment'];
+
+                foreach( $grade as $key => $n ) {
+                  // print "The teamId is ".$key." and grade is ".$grade[$key]." and comment ".$comment[$key]."<br>";
+                  // echo "<h4>Grade updated to ".$grade[$key]."</h4>";
+                  assignGradeToTeam($key, $grade[$key], $comment[$key]);
+                }
+                listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
+
               }else{
-                echo "Second step";
-                      //Second step : display list of teams
-                      listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
-              //	listTeamsForGrading($_GET['td'],$_GET['job']);
+                  //Second step : display list of teams
+                  listTeamsAvailable('grading', $_GET['groupId'], $_GET['job'], $_GET['course']);
+                  //	listTeamsForGrading($_POST['td'],$_POST['job']);
               }
         } else {
               //First step : select TD and task which we want to grade
               listTD('grading');
       }
-      //Third step : update grade
     } else {
       echo ("<h2>You have first to select the team you want to work on</h2>");
     }
