@@ -218,13 +218,11 @@ echo '  <!-- Navigation-->
   if (!empty($errors)) {
       echo "<h4 style='color: red;'>" . $errors[0] . "</h4>";
   }
-  echo '<div class="content-wrapper">
-      <div class="container-fluid">';
-
-        echo '
-        <div class="row">
-          <div class="col-12">';
-
+/*  echo '<div class="content-wrapper">
+          <div class="container-fluid">
+          <div class="row">
+          <div class="col">';
+*/
   echo '<h1><img src="themes/default/images/examples.png" alt="examples" />'.
               $title.'</h1>';
 
