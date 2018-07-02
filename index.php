@@ -1,116 +1,135 @@
 <?php
-/*
-==============================================================================
 
-	Copyright (c) 2015 Marc Augier
-
-	For a full list of contributors, see "credits.txt".
-	The full license can be read in "license.txt".
-
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
-
-	See the GNU General Public License for more details.
-
-	Contact: m.augier@me.com
-==============================================================================
-*/
-
-/*
-UserCake Version: 2.0.2
-http://usercake.com
-*/
-
-require_once("models/config.php");
-if (!securePage($_SERVER['PHP_SELF']))
-{
-	die();
-}
-//Prevent the user visiting the logged in page if he/she is already logged in
-if(isUserLoggedIn()) {
-	header("Location: home.php");
-	die();
-}
-
-require_once("inc/classes.php");
-require_once("inc/functions.php");
-require_once("themes/$theme/theme.php");
-
-//Forms posted
-if(!empty($_POST))
-{
-	$errors = array();
-	$username = sanitize(trim($_POST["username"]));
-	$password = trim($_POST["password"]);
-
-	//Perform some validation
-	//Feel free to edit / change as required
-	if($username == "")
-	{
-		$errors[] = lang("ACCOUNT_SPECIFY_USERNAME");
-	}
-	if($password == "")
-	{
-		$errors[] = lang("ACCOUNT_SPECIFY_PASSWORD");
-	}
-
-	if(count($errors) == 0)
-	{
-		//A security note here, never tell the user which credential was incorrect
-		if(!usernameExists($username))
-		{
-			$errors[] = lang("ACCOUNT_USER_OR_PASS_INVALID");
-		}
-		else
-		{
-			$userdetails = fetchUserDetails($username);
-			//See if the user's account is activated
-			if($userdetails["active"]==0)
-			{
-				$errors[] = lang("ACCOUNT_INACTIVE");
-			}
-			else
-			{
-				//Hash the password and use the salt from the database to compare the password.
-				$entered_pass = generateHash($password,$userdetails["password"]);
-
-				if($entered_pass != $userdetails["password"])
-				{
-					//Again, we know the password is at fault here, but lets not give away the combination incase of someone bruteforcing
-					$errors[] = lang("ACCOUNT_USER_OR_PASS_INVALID");
-				}
-				else
-				{
-					//Passwords match! we're good to go'
-
-					//Construct a new logged in user object
-					//Transfer some db data to the session object
-					$loggedInUser = new loggedInUser();
-					$loggedInUser->email = $userdetails["email"];
-					$loggedInUser->user_id = $userdetails["id"];
-					$loggedInUser->hash_pw = $userdetails["password"];
-					$loggedInUser->title = $userdetails["title"];
-					$loggedInUser->displayname = $userdetails["display_name"];
-					$loggedInUser->username = $userdetails["user_name"];
-
-					//Update last sign in
-					$loggedInUser->updateLastSignIn();
-					$_SESSION["userCakeUser"] = $loggedInUser;
-
-					//Redirect to user account page
-					header("Location: home.php");
-					die();
-				}
-			}
-		}
-	}
-}
-
-require_once("inc/my_functions.php");
-
-OpenSignInPage("Welcome to ZOGG	");
-closePage();
-
+require_once 'users/init.php';
+require_once $abs_us_root.$us_url_root.'users/includes/header.php';
+require_once $abs_us_root.$us_url_root.'users/includes/navigation.php';
 ?>
+
+<div id="page-wrapper">
+<div class="container">
+<div class="row">
+	<div class="col-xs-12">
+		<div class="jumbotron">
+			<h1>Welcome to <?php echo $settings->site_name;?></h1>
+			<p class="text-muted">An Open Source PHP User Management Framework. <?php //print_r($_SESSION);?></p>
+			<p>
+			<?php if($user->isLoggedIn()){$uid = $user->data()->id;?>
+				<a class="btn btn-default" href="users/account.php" role="button">User Account &raquo;</a>
+			<?php }else{?>
+				<a class="btn btn-warning" href="users/login.php" role="button">Log In &raquo;</a>
+				<a class="btn btn-info" href="users/join.php" role="button">Sign Up &raquo;</a>
+			<?php } ?>
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 1: Change your password!</strong></div>
+		<div class="panel-body">You're going to login with the default username of <strong>admin</strong> and the default password of <strong>password</strong>.
+		You can also login as a standard level user with the credentials of <strong>user</strong> and <strong>password</strong>.
+		If you cannot login for some reason, edit the login.php file and uncomment out the lines<br> error_reporting(E_ALL);<br>
+		ini_set('display_errors', 1);<br> to see if there are any errors in your server configuration.
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 2: Change some settings</strong></div>
+		<div class="panel-body">You want to go to the Admin Dashboard. From there you can personalize your settings.
+		You can decide whether or not you want to use reCaptcha, force SSL, or mess with some CSS.
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+
+<div class="row">
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 3: Explore</strong></div>
+		<div class="panel-body">From the Admin Dashboard, you can go to Admin Permissions and add some new user levels.
+		Then check out Admin Pages to decide which pages are private and which are public. Once you make a page private,
+		you can decide how what level of access someone needs to access it.
+		Any new pages you create in your site folder will automatically show up here.
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 4: Check out the other resources</strong></div>
+		<div class="panel-body">The users/blank_pages folder contains a blank version of this page and one with the sidebar
+		included for your convenience. There are also special_blanks that you can drop into your site folder and load up to
+		check out all the things you can do with Bootstrap.
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+
+<div class="row">
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 5: Design and secure your own pages</strong></div>
+		<div class="panel-body">Of course, using our blanks is the quickest way to get up and running,
+		but you can also secure any page. Simply add this php code to the top of your page and it will
+		perform a check to see if you've set any special permissions.<br/>
+		require_once 'users/init.php';<br/>
+		require_once $abs_us_root.$us_url_root.'users/includes/header.php';<br/>
+		require_once $abs_us_root.$us_url_root.'users/includes/navigation.php';<br/>
+		  if (!securePage($_SERVER['PHP_SELF'])){die();}
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 6: Check out the forums and documentation at <a target="_blank" href="http://UserSpice.com">UserSpice.com</strong></a></div>
+		<div class="panel-body">That's where the latest options are and you can find people willing to help.
+		No account is required for browsing the forums, but you will need to sign up to be able to post.
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+
+<div class="row">
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 7: Replace this ugly homepage with your own beautiful creation</strong></div>
+		<div class="panel-body">Don't forget to swap out logo.png in the images folder with your own! If you're getting nagging
+		message in the footer, <a href="https://www.google.com/recaptcha/admin#list">go get you some of your own reCAPTCHA keys</a>
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><strong>Step 8: Avoid editing the UserSpice files</strong></div>
+		<div class="panel-body">But what if you want to change the UserSpice files?
+		We have a solution that lets you edit our files and still not break future upgrades.
+		For instance, if you want to modify the account.php file... just copy our file into
+		the "usersc" folder.  Then you can edit away and your file will be loaded instead of ours!
+		</div>
+	</div><!-- /panel -->
+</div><!-- /.col -->
+</div><!-- /.row -->
+
+<div class="row">
+<div class="col-xs-12">
+	<div class="well"><p>UserSpice is built using <a href="http://getbootstrap.com/">Twitter's Bootstrap</a>,
+	so it is fully responsive and there is tons of documentation. The look and the feel can be changed very easily. </p>
+	<p>Consider checking out <a href="http://bootsnipp.com">Bootsnipp</a> to see all the widgets and tools you can
+	easily drop into UserSpice to get your project off the ground.
+	</div>
+</div><!-- /.col -->
+</div><!-- /.row -->
+
+</div> <!-- /container -->
+
+</div> <!-- /#page-wrapper -->
+
+<!-- footers -->
+<?php require_once $abs_us_root.$us_url_root.'users/includes/page_footer.php'; // the final html footer copyright row + the external js calls ?>
+
+<!-- Place any per-page javascript here -->
+
+
+<?php require_once $abs_us_root.$us_url_root.'users/includes/html_footer.php'; // currently just the closing /body and /html ?>

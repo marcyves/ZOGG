@@ -1,3 +1,0 @@
-INSERT INTO `Job` VALUES(0,'Debate');
-INSERT INTO `Job` VALUES(1,'Access');
-INSERT INTO `Job` VALUES(2,'Case');
